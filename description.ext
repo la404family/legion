@@ -29,6 +29,7 @@ class CfgFunctions {
             class supportManager {};
             class callAirSupport {};
             class callAmmoDrop {};
+            class callVehicleDelivery {};
         };
     };
 };
@@ -42,6 +43,7 @@ class CfgRemoteExec {
         class TAG_fnc_transferLocality { allowedTargets = 2; }; // Server only
         class TAG_fnc_callAirSupport { allowedTargets = 2; }; // Server only
         class TAG_fnc_callAmmoDrop { allowedTargets = 2; }; // Server only
+        class TAG_fnc_callVehicleDelivery { allowedTargets = 2; }; // Server only
         class TAG_fnc_applyIdentity { allowedTargets = 0; jip = 1; }; // All clients
     };
     class Commands {

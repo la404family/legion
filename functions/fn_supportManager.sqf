@@ -65,6 +65,27 @@ if (!hasInterface) exitWith {};
             "",
             "leader group _target == _target"
         ];
+
+        // Action 3 : Livraison de Véhicule
+        _unit addAction [
+            localize "STR_TAG_Action_Support_Vehicle",
+            {
+                params ["_target", "_caller", "_actionId", "_arguments"];
+
+                private _targetPos = screenToWorld [0.5, 0.5];
+                if (_caller distance _targetPos > 2000) then {
+                    _targetPos = getPos _caller;
+                };
+
+                [_targetPos, _caller] remoteExec ["TAG_fnc_callVehicleDelivery", 2];
+            },
+            [],
+            4.3,
+            false,
+            true,
+            "",
+            "leader group _target == _target"
+        ];
     };
 
     private _lastPlayer = objNull;

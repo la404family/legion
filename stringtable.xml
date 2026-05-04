@@ -56,6 +56,10 @@
             <French>Support > Livraison de Munitions</French>
             <English>Support > Ammo Delivery</English>
         </Key>
+        <Key ID="STR_TAG_Action_Support_Vehicle">
+            <French>Support > Livraison de Véhicule</French>
+            <English>Support > Vehicle Delivery</English>
+        </Key>
     </Package>
 
     <Package name="Messages_RoE">
@@ -181,6 +185,28 @@
         <Key ID="STR_TAG_Msg_Ammo_Dropped">
             <French>QG: Colis largué ! L'hélicoptère logistique rentre à la base.</French>
             <English>HQ: Package dropped! Logistics helicopter returning to base.</English>
+        </Key>
+
+        <!-- Vehicle Delivery -->
+        <Key ID="STR_TAG_Msg_Vehicle_Denied">
+            <French>QG: Négatif, l'espace aérien est déjà occupé. Terminé.</French>
+            <English>HQ: Negative, airspace already occupied. Out.</English>
+        </Key>
+        <Key ID="STR_TAG_Msg_Vehicle_Approved">
+            <French>QG: Demande approuvée. L'hélicoptère de livraison a décollé.</French>
+            <English>HQ: Request approved. Delivery helicopter has taken off.</English>
+        </Key>
+        <Key ID="STR_TAG_Msg_Vehicle_Error">
+            <French>QG: Problème technique au décollage, livraison annulée.</French>
+            <English>HQ: Technical issue at takeoff, delivery cancelled.</English>
+        </Key>
+        <Key ID="STR_TAG_Msg_Vehicle_Dropped">
+            <French>QG: Véhicule livré ! L'hélicoptère rentre à la base.</French>
+            <English>HQ: Vehicle delivered! Helicopter returning to base.</English>
+        </Key>
+        <Key ID="STR_TAG_Msg_Vehicle_Marker">
+            <French>Livraison Véhicule</French>
+            <English>Vehicle Delivery</English>
         </Key>
     </Package>
 
