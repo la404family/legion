@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project name="LA_LEGION_ETRANGERE">
+    <Package name="Actions">
+        <!-- ======================== -->
+        <!-- BOUTONS D'ACTION (MOLETTE) -->
+        <!-- ======================== -->
+
+        <!-- RoE Manager -->
+        <Key ID="STR_TAG_Action_RoE_Stealth">
+            <French>RoE > Furtif (Ne pas tirer)</French>
+            <English>RoE > Stealth (Hold Fire)</English>
+        </Key>
+        <Key ID="STR_TAG_Action_RoE_Vigilance">
+            <French>RoE > Vigilance (Tir à volonté)</French>
+            <English>RoE > Vigilance (Fire at Will)</English>
+        </Key>
+        <Key ID="STR_TAG_Action_RoE_Assault">
+            <French>RoE > Assaut (Engagement total)</French>
+            <English>RoE > Assault (Full Engagement)</English>
+        </Key>
+        <Key ID="STR_TAG_Action_RoE_Charge">
+            <French>RoE > Assaut ULTRA AGRESSIF (Charge)</French>
+            <English>RoE > ULTRA AGGRESSIVE Assault (Charge)</English>
+        </Key>
+
+        <!-- Heal Manager -->
+        <Key ID="STR_TAG_Action_Heal">
+            <French>Tactique > Se soigner</French>
+            <English>Tactical > Heal Up</English>
+        </Key>
+
+        <!-- Search Manager -->
+        <Key ID="STR_TAG_Action_Search">
+            <French>Tactique > Fouiller les bâtiments (CQB)</French>
+            <English>Tactical > Search Buildings (CQB)</English>
+        </Key>
+
+        <!-- Retreat Manager -->
+        <Key ID="STR_TAG_Action_Retreat">
+            <French>Tactique > Repli Tactique (360° et Fumigènes)</French>
+            <English>Tactical > Tactical Retreat (360° and Smoke)</English>
+        </Key>
+
+        <!-- Line Formation Manager -->
+        <Key ID="STR_TAG_Action_LineFormation">
+            <French>Tactique > Formation en Ligne et Fumigènes</French>
+            <English>Tactical > Line Formation and Smoke</English>
+        </Key>
+
+        <!-- Support Manager -->
+        <Key ID="STR_TAG_Action_Support_CAS">
+            <French>Support > Appel Hélicoptère (CAS)</French>
+            <English>Support > Call Helicopter (CAS)</English>
+        </Key>
+        <Key ID="STR_TAG_Action_Support_Ammo">
+            <French>Support > Livraison de Munitions</French>
+            <English>Support > Ammo Delivery</English>
+        </Key>
+    </Package>
+
+    <Package name="Messages_RoE">
+        <!-- ======================== -->
+        <!-- MESSAGES ROE              -->
+        <!-- ======================== -->
+        <Key ID="STR_TAG_Msg_RoE_Stealth">
+            <French>Ordre transmis : Mode Furtif. Ne tirez que si l'on vous tire dessus.</French>
+            <English>Order transmitted: Stealth Mode. Fire only if fired upon.</English>
+        </Key>
+        <Key ID="STR_TAG_Msg_RoE_Vigilance">
+            <French>Ordre transmis : Vigilance. Feu autorisé sur toute cible identifiée.</French>
+            <English>Order transmitted: Vigilance. Weapons free on all identified targets.</English>
+        </Key>
+        <Key ID="STR_TAG_Msg_RoE_Assault">
+            <French>Ordre transmis : Assaut ! Prenez position et détruisez les cibles.</French>
+            <English>Order transmitted: Assault! Take positions and destroy all targets.</English>
+        </Key>
+        <Key ID="STR_TAG_Msg_RoE_Charge">
+            <French>Ordre transmis : CHARGEZ ! Engagement à pleine vitesse sans s'abriter !</French>
+            <English>Order transmitted: CHARGE! Full speed engagement, no cover!</English>
+        </Key>
+    </Package>
+
+    <Package name="Messages_Tactical">
+        <!-- ======================== -->
+        <!-- MESSAGES TACTIQUES        -->
+        <!-- ======================== -->
+
+        <!-- Heal -->
+        <Key ID="STR_TAG_Msg_Heal_Ordered">
+            <French>Ordre transmis. %1 I.A vont se soigner dès que la menace sera éliminée.</French>
+            <English>Order transmitted. %1 AI will heal up once the threat is eliminated.</English>
+        </Key>
+        <Key ID="STR_TAG_Msg_Heal_NoKit">
+            <French>Attention : Des I.A sont blessées mais manquent de trousses de premiers secours !</French>
+            <English>Warning: Some AI are wounded but lack first aid kits!</English>
+        </Key>
+        <Key ID="STR_TAG_Msg_Heal_NotNeeded">
+            <French>Aucune I.A de votre escouade ne nécessite de soins pour le moment.</French>
+            <English>No AI in your squad requires medical attention at this time.</English>
+        </Key>
+
+        <!-- Search (CQB) -->
+        <Key ID="STR_TAG_Msg_Search_NoBuilding">
+            <French>Aucun bâtiment sécurisable à proximité.</French>
+            <English>No securable building nearby.</English>
+        </Key>
+        <Key ID="STR_TAG_Msg_Search_NotAccessible">
+            <French>Les bâtiments proches ne sont pas accessibles.</French>
+            <English>Nearby buildings are not accessible.</English>
+        </Key>
+        <Key ID="STR_TAG_Msg_Search_NoInfantry">
+            <French>Aucune unité d'infanterie disponible pour l'assaut.</French>
+            <English>No infantry unit available for the assault.</English>
+        </Key>
+        <Key ID="STR_TAG_Msg_Search_Deploying">
+            <French>Ordre transmis : %1 I.A se déploient pour fouiller la zone.</French>
+            <English>Order transmitted: %1 AI deploying to search the area.</English>
+        </Key>
+        <Key ID="STR_TAG_Msg_Search_Complete">
+            <French>Fin de l'assaut des bâtiments. Les I.A. reprennent la formation.</French>
+            <English>Building assault complete. AI returning to formation.</English>
+        </Key>
+
+        <!-- Retreat (360°) -->
+        <Key ID="STR_TAG_Msg_Retreat_NoAI">
+            <French>Aucune I.A disponible pour l'ordre de repli.</French>
+            <English>No AI available for the retreat order.</English>
+        </Key>
+        <Key ID="STR_TAG_Msg_Retreat_Ordered">
+            <French>Ordre transmis : REPLI TACTIQUE ! Fumigènes ! On se regroupe sur ma position !</French>
+            <English>Order transmitted: TACTICAL RETREAT! Smoke grenades! Rally on my position!</English>
+        </Key>
+
+        <!-- Line Formation -->
+        <Key ID="STR_TAG_Msg_Line_NoAI">
+            <French>Aucune I.A disponible pour la formation en ligne.</French>
+            <English>No AI available for line formation.</English>
+        </Key>
+        <Key ID="STR_TAG_Msg_Line_Ordered">
+            <French>Ordre transmis : FORMATION EN LIGNE ! Fumigènes ! On forme le mur !</French>
+            <English>Order transmitted: LINE FORMATION! Smoke grenades! Form the wall!</English>
+        </Key>
+    </Package>
+
+    <Package name="Messages_Support">
+        <!-- ======================== -->
+        <!-- MESSAGES SUPPORT          -->
+        <!-- ======================== -->
+
+        <!-- Air Support (CAS) -->
+        <Key ID="STR_TAG_Msg_CAS_Denied">
+            <French>QG: Négatif, l'hélicoptère est déjà déployé ou indisponible.</French>
+            <English>HQ: Negative, helicopter already deployed or unavailable.</English>
+        </Key>
+        <Key ID="STR_TAG_Msg_CAS_Approved">
+            <French>QG: Soutien aérien validé. Arrivée sur zone imminente.</French>
+            <English>HQ: Air support approved. Arrival on station imminent.</English>
+        </Key>
+        <Key ID="STR_TAG_Msg_CAS_Error">
+            <French>QG: Erreur technique, hélicoptère annulé.</French>
+            <English>HQ: Technical error, helicopter cancelled.</English>
+        </Key>
+        <Key ID="STR_TAG_Msg_CAS_RTB">
+            <French>QG: L'hélicoptère rentre à la base, support libéré.</French>
+            <English>HQ: Helicopter returning to base, support released.</English>
+        </Key>
+
+        <!-- Ammo Drop -->
+        <Key ID="STR_TAG_Msg_Ammo_Denied">
+            <French>QG: Négatif, l'espace aérien est déjà occupé. Terminé.</French>
+            <English>HQ: Negative, airspace already occupied. Out.</English>
+        </Key>
+        <Key ID="STR_TAG_Msg_Ammo_Approved">
+            <French>QG: Demande logistique approuvée. L'hélicoptère de ravitaillement a décollé.</French>
+            <English>HQ: Logistics request approved. Supply helicopter has taken off.</English>
+        </Key>
+        <Key ID="STR_TAG_Msg_Ammo_Error">
+            <French>QG: Problème technique au décollage, livraison annulée.</French>
+            <English>HQ: Technical issue at takeoff, delivery cancelled.</English>
+        </Key>
+        <Key ID="STR_TAG_Msg_Ammo_Dropped">
+            <French>QG: Colis largué ! L'hélicoptère logistique rentre à la base.</French>
+            <English>HQ: Package dropped! Logistics helicopter returning to base.</English>
+        </Key>
+    </Package>
+
+    <Package name="Messages_Squad">
+        <!-- ======================== -->
+        <!-- MESSAGES ESCOUADE         -->
+        <!-- ======================== -->
+
+        <!-- Switch to AI -->
+        <Key ID="STR_TAG_Msg_Switch_Success">
+            <French>Vous avez pris le contrôle d'une I.A de votre escouade.</French>
+            <English>You have taken control of an AI in your squad.</English>
+        </Key>
+        <Key ID="STR_TAG_Msg_Switch_Error">
+            <French>Erreur lors du transfert de commandement de l'I.A.</French>
+            <English>Error during AI command transfer.</English>
+        </Key>
+        <Key ID="STR_TAG_Msg_Switch_Dead">
+            <French>Plus aucune I.A disponible. Vous êtes mort.</French>
+            <English>No more AI available. You are dead.</English>
+        </Key>
+
+        <!-- Leadership -->
+        <Key ID="STR_TAG_Msg_Leader_Fallen">
+            <French>Le leader %1 est tombé au combat. %2 prend le commandement !</French>
+            <English>Leader %1 has fallen in combat. %2 takes command!</English>
+        </Key>
+        <Key ID="STR_TAG_Msg_Leader_Assigned">
+            <French>Le rôle de leader a été attribué à %1.</French>
+            <English>The leader role has been assigned to %1.</English>
+        </Key>
+    </Package>
+</Project>
