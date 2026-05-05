@@ -47,8 +47,11 @@ missionNamespace setVariable ["TAG_AirSupport_Active", true, true];
 if (count _targetPos < 2) then { _targetPos = getPos _caller; };
 if (count _targetPos < 3) then { _targetPos set [2, 0]; };
 
+// ── Classe du véhicule (requise pour findEmptyPosition) ─────────────────────
+private _vehClass = "AMF_GBC180_PERS_03";
+
 // ── Calcul intelligent de la position de livraison ──────────────────────────
-// On centre sur la masse des joueurs actifs, puis on cherche une route.
+// Centre de masse des joueurs actifs → recherche d'une route propre et dégagée.
 
 private _activePlayers = allPlayers select { alive _x };
 if (count _activePlayers == 0) then { _activePlayers = [_caller]; };
@@ -58,45 +61,80 @@ private _centerPos = [0, 0, 0];
 _centerPos = _centerPos vectorMultiply (1 / (count _activePlayers));
 if (count _centerPos < 3) then { _centerPos set [2, 0]; };
 
-private _dropPos = +_centerPos;
-private _foundRoad = false;
+private _dropPos       = +_centerPos;
+private _foundGoodRoad = false;
 
-// Essai 1 : route dans un rayon de 500 m autour du centre des joueurs
-private _roads = _centerPos nearRoads 500;
-if (count _roads > 0) then {
-    _roads = [_roads, [], { _x distance2D _centerPos }, "ASCEND"] call BIS_fnc_sortBy;
-    _dropPos = getPos (_roads select 0);
-    if (count _dropPos < 3) then { _dropPos set [2, 0]; };
-    _foundRoad = true;
+// Fonction locale : teste une liste de routes et retourne la première position propre
+private _fnc_testRoads = {
+    params ["_roadList", "_strict"];
+    private _checkRadius = if (_strict) then { 12 } else { 8 };
+    private _badTypes = ["TREE", "SMALL TREE", "BUSH", "ROCK", "ROCKS", "HIDE",
+                         "BUILDING", "HOUSE", "WALL", "FENCE"];
+    {
+        if (_foundGoodRoad) exitWith {};
+        private _road    = _x;
+        private _roadPos = getPos _road;
+        if (!isOnRoad _roadPos) then { continue };
+
+        for "_offset" from -15 to 15 step 5 do {
+            if (_foundGoodRoad) exitWith {};
+
+            // Calcul de la position le long du segment de route
+            private _roadDir = getDir _road;
+            private _testPos = [
+                (_roadPos select 0) + _offset * sin(_roadDir),
+                (_roadPos select 1) + _offset * cos(_roadDir),
+                0
+            ];
+
+            if (surfaceIsWater _testPos) then { continue };
+            if (!isOnRoad _testPos)      then { continue };
+
+            // Vérification directe des obstacles terrain autour du point
+            private _nearBad = nearestTerrainObjects [_testPos, _badTypes, _checkRadius, false, true];
+            if (count _nearBad > 0) then { continue };
+
+            // Recherche d'une position vide pour le véhicule
+            private _emptyPos = _testPos findEmptyPosition [0, _checkRadius, _vehClass];
+            if (count _emptyPos > 0 && { _emptyPos distance2D _testPos <= _checkRadius }) then {
+                _dropPos = _emptyPos;
+                _dropPos set [2, 0];
+                _foundGoodRoad = true;
+            };
+        };
+    } forEach _roadList;
 };
 
-// Essai 2 : élargir à 1500 m si aucune route trouvée
-if (!_foundRoad) then {
-    private _roads2 = _centerPos nearRoads 1500;
-    if (count _roads2 > 0) then {
-        _roads2 = [_roads2, [], { _x distance2D _centerPos }, "ASCEND"] call BIS_fnc_sortBy;
-        _dropPos = getPos (_roads2 select 0);
-        if (count _dropPos < 3) then { _dropPos set [2, 0]; };
-        _foundRoad = true;
-    };
+// Passe 1 : routes larges et proches (rayon 800 m — critères stricts)
+private _allRoads = _centerPos nearRoads 800;
+_allRoads = [_allRoads, [], {
+    private _info = getRoadInfo _x;
+    (_info select 1) + (10000 / ((_x distance2D _centerPos) max 1))
+}, "DESCEND"] call BIS_fnc_sortBy;
+[_allRoads, true] call _fnc_testRoads;
+
+// Passe 2 : rayon élargi à 2000 m — critères légèrement souples
+if (!_foundGoodRoad) then {
+    _allRoads = _centerPos nearRoads 2000;
+    _allRoads = [_allRoads, [], { _x distance2D _centerPos }, "ASCEND"] call BIS_fnc_sortBy;
+    [_allRoads, false] call _fnc_testRoads;
 };
 
-// Repli : position plate dégagée proche du centre si toujours pas de route
-if (!_foundRoad) then {
-    private _safePos = [_centerPos, 0, 200, 8, 0, 0.3, 0, [], _centerPos] call BIS_fnc_findSafePos;
-    if (_safePos isEqualType [] && { count _safePos >= 2 } && { _safePos distance2D _centerPos < 800 }) then {
+// Repli ultime : position plate dégagée sans route
+if (!_foundGoodRoad) then {
+    private _safePos = [_centerPos, 0, 300, 10, 0, 0.35, 0, [], _centerPos] call BIS_fnc_findSafePos;
+    if (_safePos isEqualType [] && { count _safePos >= 2 } && { _safePos distance2D _centerPos < 1200 }) then {
         _dropPos = _safePos;
-        if (count _dropPos < 3) then { _dropPos set [2, 0]; };
     };
+    _dropPos set [2, 0];
 };
 
 // ── Paramètres de vol ────────────────────────────────────────────────────────
-private _spawnDist    = 2000;
-private _helicoClass  = "B_AMF_Heli_Transport_01_F";
-private _vehClass     = "AMF_GBC180_PERS_03";
-private _flyHeight    = 150;
-private _hoverHeight  = 10;
-private _dir          = random 360;
+private _spawnDist   = 2000;
+private _helicoClass = "B_AMF_Heli_Transport_01_F";
+private _flyHeight   = 150;
+private _hoverHeight = 10;
+private _dir         = random 360;
 
 private _spawnPos = _dropPos vectorAdd [(_spawnDist * (sin _dir)), (_spawnDist * (cos _dir)), _flyHeight];
 if (count _spawnPos < 3) then { _spawnPos set [2, _flyHeight]; };

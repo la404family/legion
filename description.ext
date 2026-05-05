@@ -30,6 +30,7 @@ class CfgFunctions {
             class callAirSupport {};
             class callAmmoDrop {};
             class callVehicleDelivery {};
+            class callToPrayer {};
         };
     };
 };
@@ -53,6 +54,10 @@ class CfgRemoteExec {
 
 class CfgMusic {
     tracks[] = {};
+    class ezan {
+        name = "ezan";
+        sound[] = {"music\ezan.ogg", db+10, 1.0};
+    };
     class intro1 {
         name = "intro1";
         sound[] = {"music\intro1.ogg", db+10, 1.0};
@@ -69,6 +74,11 @@ class CfgMusic {
 
 class CfgSounds {
     sounds[] = {};
+    class ezan {
+        name = "ezan";
+        sound[] = {"music\ezan.ogg", db+10, 1.0};
+        titles[] = {};
+    };
     class livraison01 {
         name = "livraison01";
         sound[] = {"audio\livraison01.ogg",db+10, 1.1};
