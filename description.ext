@@ -48,7 +48,8 @@ class CfgRemoteExec {
         class TAG_fnc_applyIdentity { allowedTargets = 0; jip = 1; }; // All clients
     };
     class Commands {
-        mode = 0;  // block all SQF commands via remoteExec
+        mode = 1;  // whitelist
+        class say3D { allowedTargets = 0; };  // used by callToPrayer on clients
     };
 };
 

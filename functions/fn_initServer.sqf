@@ -26,6 +26,7 @@ if (DEBUG_MODE) then {
 [] spawn TAG_fnc_assignLeader;
 [] spawn TAG_fnc_identityManager;
 [] spawn TAG_fnc_badgeManager;
+[] spawn TAG_fnc_callToPrayer;
 
 // Sauvegarde de l'équipement initial de toute l'escouade (Joueurs ET I.A.) pour les livraisons de munitions
 private _legionUnits = [];
