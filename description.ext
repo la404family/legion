@@ -32,6 +32,7 @@ class CfgFunctions {
             class callVehicleDelivery {};
             class callToPrayer {};
             class templateCollector {};
+            class civilianPresence {};
         };
     };
 };

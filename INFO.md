@@ -15,3 +15,4 @@
 -  les barbes est déterminé par la variable CUP_Beard_Brown ou CUP_Beard_Black
 - Les chapeaux sont déterminés par : CPU_H_TKI_Lungee_Open_01 à CPU_H_TKI_Lungee_Open_06 ou CPU_H_TKI_Pakol_1_01 à CPU_H_TKI_Pakol_1_05 ou CPU_H_TKI_SkullCap_01 à CPU_H_TKI_SkullCap_06 
 -  Les chapeaux et les barbes sont réservés aux hommes.
+- Toujours ajouter : 0.5 en Z lors d'un spawn (exemple : _bPos set [2, (_bPos select 2) + 0.5];)
