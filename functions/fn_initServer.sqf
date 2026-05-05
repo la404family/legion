@@ -22,6 +22,10 @@ if (DEBUG_MODE) then {
     diag_log "[TAG] Server Initialization Started.";
 };
 
+// Collecte et suppression des templates, initialisation des noms civils
+// Exécuté en synchrone : les templates doivent être prêts avant tout spawn de civils
+[] call TAG_fnc_templateCollector;
+
 // Server logic here (spawn units, setup variables, etc.)
 [] spawn TAG_fnc_assignLeader;
 [] spawn TAG_fnc_identityManager;

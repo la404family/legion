@@ -9,8 +9,9 @@
     - Max_Tak_woman1 à  Max_Tak_woman6
     - Max_Taky_woman1 à  Max_Taky_woman5
     - Max_Tak2_woman1 à  Max_Tak2_woman5
+- Les hommes sont défini par le mod par : CUP_C_TK_....
 - template_01 à template_16 sont des femmes
-- template_16 à template_XX sont des hommes...
+- template_16 à template_37 sont des hommes...
 -  les barbes est déterminé par la variable CUP_Beard_Brown ou CUP_Beard_Black
 - Les chapeaux sont déterminés par : CPU_H_TKI_Lungee_Open_01 à CPU_H_TKI_Lungee_Open_06 ou CPU_H_TKI_Pakol_1_01 à CPU_H_TKI_Pakol_1_05 ou CPU_H_TKI_SkullCap_01 à CPU_H_TKI_SkullCap_06 
 -  Les chapeaux et les barbes sont réservés aux hommes.

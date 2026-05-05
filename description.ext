@@ -31,6 +31,7 @@ class CfgFunctions {
             class callAmmoDrop {};
             class callVehicleDelivery {};
             class callToPrayer {};
+            class templateCollector {};
         };
     };
 };
@@ -82,147 +83,147 @@ class CfgSounds {
     };
     class livraison01 {
         name = "livraison01";
-        sound[] = {"audio\livraison01.ogg",db+10, 1.2};
+        sound[] = {"audio\livraison01.ogg",db+10, 1.1};
         titles[] = {};
     };
     class livraison02 {
         name = "livraison02";
-        sound[] = {"audio\livraison02.ogg",db+10, 1.2};
+        sound[] = {"audio\livraison02.ogg",db+10, 1.1};
         titles[] = {};
     };
     class livraison03 {
         name = "livraison03";
-        sound[] = {"audio\livraison03.ogg",db+10, 1.2};
+        sound[] = {"audio\livraison03.ogg",db+10, 1.1};
         titles[] = {};
     };
     class livraison04 {
         name = "livraison04";
-        sound[] = {"audio\livraison04.ogg",db+10, 1.2};
+        sound[] = {"audio\livraison04.ogg",db+10, 1.1};
         titles[] = {};
     };
     class livraison05 {
         name = "livraison05";
-        sound[] = {"audio\livraison05.ogg",db+10, 1.2};
+        sound[] = {"audio\livraison05.ogg",db+10, 1.1};
         titles[] = {};
     };
     class livraison06 {
         name = "livraison06";
-        sound[] = {"audio\livraison06.ogg",db+10, 1.2};
+        sound[] = {"audio\livraison06.ogg",db+10, 1.1};
         titles[] = {};
     };
     class livraison07 {
         name = "livraison07";
-        sound[] = {"audio\livraison07.ogg",db+10, 1.2};
+        sound[] = {"audio\livraison07.ogg",db+10, 1.1};
         titles[] = {};
     };
     class livraison08 {
         name = "livraison08";
-        sound[] = {"audio\livraison08.ogg",db+10, 1.2};
+        sound[] = {"audio\livraison08.ogg",db+10, 1.1};
         titles[] = {};
     };
     class livraison09 {
         name = "livraison09";
-        sound[] = {"audio\livraison09.ogg",db+10, 1.2};
+        sound[] = {"audio\livraison09.ogg",db+10, 1.1};
         titles[] = {};
     };
     class negatif01 {
         name = "negatif01";
-        sound[] = {"audio\negatif01.ogg",db+10, 1.2};
+        sound[] = {"audio\negatif01.ogg",db+10, 1.1};
         titles[] = {};
     };
     class negatif02 {
         name = "negatif02";
-        sound[] = {"audio\negatif02.ogg",db+10, 1.2};
+        sound[] = {"audio\negatif02.ogg",db+10, 1.1};
         titles[] = {};
     };
     class negatif03 {
         name = "negatif03";
-        sound[] = {"audio\negatif03.ogg",db+10, 1.2};
+        sound[] = {"audio\negatif03.ogg",db+10, 1.1};
         titles[] = {};
     };
     class negatif04 {
         name = "negatif04";
-        sound[] = {"audio\negatif04.ogg",db+10, 1.2};
+        sound[] = {"audio\negatif04.ogg",db+10, 1.1};
         titles[] = {};
     };
     class soutien01 {
         name = "soutien01";
-        sound[] = {"audio\soutien01.ogg",db+10, 1.2};
+        sound[] = {"audio\soutien01.ogg",db+10, 1.1};
         titles[] = {};
     };
     class soutien02 {
         name = "soutien02";
-        sound[] = {"audio\soutien02.ogg",db+10, 1.2};
+        sound[] = {"audio\soutien02.ogg",db+10, 1.1};
         titles[] = {};
     };
     class soutien03 {
         name = "soutien03";
-        sound[] = {"audio\soutien03.ogg",db+10, 1.2};
+        sound[] = {"audio\soutien03.ogg",db+10, 1.1};
         titles[] = {};
     };
     class soutien04 {
         name = "soutien04";
-        sound[] = {"audio\soutien04.ogg",db+10, 1.2};
+        sound[] = {"audio\soutien04.ogg",db+10, 1.1};
         titles[] = {};
     };
     class task01_01 {
         name = "task01_01";
-        sound[] = {"audio\task01_01.ogg",db+10, 1.2};
+        sound[] = {"audio\task01_01.ogg",db+10, 1.1};
         titles[] = {};
     };
     class task01_02 {
         name = "task01_02";
-        sound[] = {"audio\task01_02.ogg",db+10, 1.2};
+        sound[] = {"audio\task01_02.ogg",db+10, 1.1};
         titles[] = {};
     };
     class task01_03 {
         name = "task01_03";
-        sound[] = {"audio\task01_03.ogg",db+10, 1.2};
+        sound[] = {"audio\task01_03.ogg",db+10, 1.1};
         titles[] = {};
     };
     class task02_01 {
         name = "task02_01";
-        sound[] = {"audio\task02_01.ogg",db+10, 1.2};
+        sound[] = {"audio\task02_01.ogg",db+10, 1.1};
         titles[] = {};
     };
     class task02_02 {
         name = "task02_02";
-        sound[] = {"audio\task02_02.ogg",db+10, 1.2};
+        sound[] = {"audio\task02_02.ogg",db+10, 1.1};
         titles[] = {};
     };
     class task02_03 {
         name = "task02_03";
-        sound[] = {"audio\task02_03.ogg",db+10, 1.2};
+        sound[] = {"audio\task02_03.ogg",db+10, 1.1};
         titles[] = {};
     };
     class task03_01 {
         name = "task03_01";
-        sound[] = {"audio\task03_01.ogg",db+10, 1.2};
+        sound[] = {"audio\task03_01.ogg",db+10, 1.1};
         titles[] = {};
     };
     class task03_02 {
         name = "task03_02";
-        sound[] = {"audio\task03_02.ogg",db+10, 1.2};
+        sound[] = {"audio\task03_02.ogg",db+10, 1.1};
         titles[] = {};
     };
     class task03_03 {
         name = "task03_03";
-        sound[] = {"audio\task03_03.ogg",db+10, 1.2};
+        sound[] = {"audio\task03_03.ogg",db+10, 1.1};
         titles[] = {};
     };
     class task04_01 {
         name = "task04_01";
-        sound[] = {"audio\task04_01.ogg",db+10, 1.2};
+        sound[] = {"audio\task04_01.ogg",db+10, 1.1};
         titles[] = {};
     };
     class task04_02 {
         name = "task04_02";
-        sound[] = {"audio\task04_02.ogg",db+10, 1.2};
+        sound[] = {"audio\task04_02.ogg",db+10, 1.1};
         titles[] = {};
     };
     class task04_03 {
         name = "task04_03";
-        sound[] = {"audio\task04_03.ogg",db+10, 1.2};
+        sound[] = {"audio\task04_03.ogg",db+10, 1.1};
         titles[] = {};
     };
 };
