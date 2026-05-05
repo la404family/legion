@@ -239,4 +239,75 @@
             <English>The leader role has been assigned to %1.</English>
         </Key>
     </Package>
+
+    <Package name="Cinematics">
+        <Key ID="STR_Intro_Line1">
+            <French>Le pays s’est effondrée en silence.</French>
+            <English>The country collapsed in silence.</English>
+        </Key>
+        <Key ID="STR_Intro_Line2">
+            <French>Conflits ethniques,</French>
+            <English>Ethnic conflicts,</English>
+        </Key>
+        <Key ID="STR_Intro_Line3">
+            <French>luttes de pouvoir,</French>
+            <English>power struggles,</English>
+        </Key>
+        <Key ID="STR_Intro_Line4">
+            <French>ingérences extérieures…</French>
+            <English>foreign interference...</English>
+        </Key>
+        <Key ID="STR_Intro_Line5">
+            <French>Les milices contrôlent le terrain,</French>
+            <English>Militias control the ground,</English>
+        </Key>
+        <Key ID="STR_Intro_Line6">
+            <French>et la guerre civile n’est plus une menace</French>
+            <English>and civil war is no longer a threat</English>
+        </Key>
+        <Key ID="STR_Intro_Line7">
+            <French>...c’est une réalité imminente</French>
+            <English>...it is an imminent reality</English>
+        </Key>
+        <Key ID="STR_Intro_Line8">
+            <French>Les négociations ont échoué.</French>
+            <English>Negotiations have failed.</English>
+        </Key>
+        <Key ID="STR_Intro_Line9">
+            <French>Nous sommes déployé en urgence.</French>
+            <English>We are deployed urgently.</English>
+        </Key>
+        <Key ID="STR_Intro_Line10">
+            <French>Objectif : stabiliser, sécuriser, contenir.</French>
+            <English>Objective: stabilize, secure, contain.</English>
+        </Key>
+        <Key ID="STR_Intro_Line11_Leader">
+            <French>Moi, %1, chef d’équipe au 2e REI,</French>
+            <English>I, %1, team leader in the 2nd REI,</English>
+        </Key>
+        <Key ID="STR_Intro_Line11_Member">
+            <French>Moi, %1, membre du 2e REI,</French>
+            <English>I, %1, member of the 2nd REI,</English>
+        </Key>
+        <Key ID="STR_Intro_Line12">
+            <French>j’ai été déployé dans cette zone instable…</French>
+            <English>I have been deployed to this unstable zone...</English>
+        </Key>
+        <Key ID="STR_Intro_Line13">
+            <French>On ne me demande pas de comprendre.</French>
+            <English>I am not asked to understand.</English>
+        </Key>
+        <Key ID="STR_Intro_Line14">
+            <French>On me demande d’agir.</French>
+            <English>I am asked to act.</English>
+        </Key>
+        <Key ID="STR_Intro_Line15">
+            <French>Et s’il le faut…</French>
+            <English>And if necessary...</English>
+        </Key>
+        <Key ID="STR_Intro_Line16">
+            <French>Etre pret à mourir.</French>
+            <English>Be ready to die.</English>
+        </Key>
+    </Package>
 </Project>

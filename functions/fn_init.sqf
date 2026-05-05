@@ -12,6 +12,9 @@
  *   None
  */
 
+// Lance la cinématique d'introduction pour le serveur et les clients
+[] spawn TAG_fnc_introCinematic;
+
 if (isServer) then {
     [] call TAG_fnc_initServer;
 };

@@ -12,7 +12,8 @@
 - Les hommes sont défini par le mod par : CUP_C_TK_....
 - template_01 à template_16 sont des femmes
 - template_16 à template_37 sont des hommes...
--  les barbes est déterminé par la variable CUP_Beard_Brown ou CUP_Beard_Black
+-  les barbes sont déterminées par la variable CUP_Beard_Brown ou CUP_Beard_Black
 - Les chapeaux sont déterminés par : CPU_H_TKI_Lungee_Open_01 à CPU_H_TKI_Lungee_Open_06 ou CPU_H_TKI_Pakol_1_01 à CPU_H_TKI_Pakol_1_05 ou CPU_H_TKI_SkullCap_01 à CPU_H_TKI_SkullCap_06 
--  Les chapeaux et les barbes sont réservés aux hommes.
-- Toujours ajouter : 0.5 en Z lors d'un spawn (exemple : _bPos set [2, (_bPos select 2) + 0.5];)
+- Les chapeaux et les barbes sont réservés aux hommes.
+- Toujours ajouter : 0.5 en Z lors d'un spawn (exemple : _bPos set [2, (_bPos select 2) + 0.5];) pour éviter de se retrouver dans le sol.
+- heliport_00 est un heliport invisible 
