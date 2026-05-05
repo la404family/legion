@@ -5,7 +5,7 @@
  *
  * Description:
  *   Gère l'appel à la prière depuis les minarets positionnés dans l'éditeur.
- *   Chaque minaret (ezan_0 à ezan_4) diffuse le son "ezan" en 3D aux joueurs
+ *   Chaque minaret (ezan_0 à ezan_5) diffuse le son "ezan" en 3D aux joueurs
  *   situés dans le rayon de portée. Le cycle se répète toutes les 30 minutes
  *   avec un décalage aléatoire initial (5 à 15 minutes).
  *
@@ -13,7 +13,7 @@
  *   Serveur
  *
  * Variables éditeur utilisées:
- *   ezan_0, ezan_1, ezan_2, ezan_3, ezan_4 — objets Loudspeaker
+ *   ezan_0, ezan_1, ezan_2, ezan_3, ezan_4, ezan_5 — objets Loudspeaker
  */
 
 if (!isServer) exitWith {};
@@ -22,7 +22,7 @@ private _soundRange   = 2500;
 private _minaretsVars = ["ezan_0", "ezan_1", "ezan_2", "ezan_3", "ezan_4", "ezan_5"];
 
 // Délai aléatoire initial avant le premier appel (5 à 15 minutes)
-sleep (3 + (random 6));
+sleep (300 + (random 600));
 
 while {true} do {
     {
