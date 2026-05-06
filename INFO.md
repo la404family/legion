@@ -18,3 +18,4 @@
 - Toujours ajouter : 0.5 en Z lors d'un spawn (exemple : _bPos set [2, (_bPos select 2) + 0.5];) pour éviter de se retrouver dans le sol.
 - heliport_00 est un heliport invisible
 - La variable du drone FR est : B_AMF_REAPER_dynamicLoadout_F
+- vehicule_team est le véhicule des joueurs en début de mission. (nom de variable du véhicule : AMF_VBMRL_127_DA)

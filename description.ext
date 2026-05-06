@@ -36,6 +36,10 @@ class CfgFunctions {
             class introCinematic {};
             class callDroneSupport {};
         };
+        class Tasks {
+            file = "tasks";
+            class taskManager {};
+        };
     };
 };
 
@@ -273,6 +277,21 @@ class CfgSounds {
     class drone_info_03 {
         name = "drone_info_03";
         sound[] = {"audio\drone_info_03.ogg",db+10, 1.1};
+        titles[] = {};
+    };
+    class drone_fin_01 {
+        name = "drone_fin_01";
+        sound[] = {"audio\drone_fin_01.ogg",db+10, 1.1};
+        titles[] = {};
+    };
+    class drone_fin_02 {
+        name = "drone_fin_02";
+        sound[] = {"audio\drone_fin_02.ogg",db+10, 1.1};
+        titles[] = {};
+    };
+    class drone_fin_03 {
+        name = "drone_fin_03";
+        sound[] = {"audio\drone_fin_03.ogg",db+10, 1.1};
         titles[] = {};
     };
 };

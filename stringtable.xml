@@ -87,6 +87,10 @@
             <French>QG: Mission terminée, le drone rentre à la base. Fin de la surveillance.</French>
             <English>HQ: Mission complete, drone returning to base. Surveillance ended.</English>
         </Key>
+        <Key ID="STR_TAG_Msg_Drone_End">
+            <French>QG: Fin de la surveillance. Le drone regagne la base. Terminé.</French>
+            <English>HQ: Surveillance complete. Drone returning to base. Out.</English>
+        </Key>
         <Key ID="STR_TAG_Msg_Drone_Error">
             <French>QG: Erreur technique, déploiement du drone annulé.</French>
             <English>HQ: Technical error, drone deployment cancelled.</English>

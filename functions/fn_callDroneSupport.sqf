@@ -255,7 +255,9 @@ private _confirmSnd = selectRandom ["drone_01", "drone_02", "drone_03"];
     // ── Phase 4 : Attendre la fin de mission ──────────────────────────────────
     sleep _missionTime;
 
-    (localize "STR_TAG_Msg_Drone_RTB") remoteExec ["systemChat", 0];
+    private _endSnd = selectRandom ["drone_fin_01", "drone_fin_02", "drone_fin_03"];
+    [_endSnd] remoteExec ["playSound", 0];
+    (localize "STR_TAG_Msg_Drone_End") remoteExec ["systemChat", 0];
 
     // Nettoyer les waypoints de loiter
     while { count (waypoints _droneGroup) > 0 } do {
