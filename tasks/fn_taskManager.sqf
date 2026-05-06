@@ -229,6 +229,24 @@ private _owner = west;
 // ══════════════════════════════════════════════════════════════════════════════
 
 
+// ── Lancement des tâches dans l'ordre chronologique de la mission ────────────
+[] call TAG_fnc_task00;
+
+// Chaîner les tâches suivantes dans un spawn pour ne pas bloquer le serveur
+[] spawn {
+    // ─ Task 01 : déclenche après embarquement ─────────────────────────────────
+    waitUntil { ["task_00_embark"] call BIS_fnc_taskCompleted };
+    [] call TAG_fnc_task01;
+
+    // ─ Task 02 : déclenche après le rendez-vous de reconnaissance ────────────
+    waitUntil { (["task_01_recon"] call BIS_fnc_taskState) in ["SUCCEEDED", "FAILED"] };
+    [] call TAG_fnc_task02;
+
+    // ─ Task 03 et suivantes : ajouter ici de la même façon ──────────────────
+    // waitUntil { ["task_02_intel"] call BIS_fnc_taskCompleted };
+    // [] call TAG_fnc_task03;
+};
+
 if (DEBUG_MODE) then {
     diag_log "[TAG] fn_taskManager: Gestionnaire de tâches initialisé.";
 };

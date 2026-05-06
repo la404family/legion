@@ -39,6 +39,11 @@ class CfgFunctions {
         class Tasks {
             file = "tasks";
             class taskManager {};
+            class task00 {};
+            class task01 {};
+            class task01_addAction {};
+            class task02 {};
+            class task02_addAction {};
         };
     };
 };
@@ -55,10 +60,17 @@ class CfgRemoteExec {
         class TAG_fnc_callVehicleDelivery { allowedTargets = 2; }; // Server only
         class TAG_fnc_callDroneSupport { allowedTargets = 2; }; // Server only
         class TAG_fnc_applyIdentity { allowedTargets = 0; jip = 1; }; // All clients
+        class TAG_fnc_task01_addAction { allowedTargets = 0; }; // All clients
+        class TAG_fnc_task01_runScenario { allowedTargets = 2; }; // Server only
+        class TAG_fnc_task02_addAction { allowedTargets = 0; }; // All clients
+        class BIS_fnc_taskSetState { allowedTargets = 0; }; // Task state sync (all machines)
     };
     class Commands {
         mode = 1;  // whitelist
-        class say3D { allowedTargets = 0; };  // used by callToPrayer on clients
+        class say3D     { allowedTargets = 0; }; // used by callToPrayer on clients
+        class playSound { allowedTargets = 0; }; // used by task/drone sounds (all clients)
+        class deleteVehicle { allowedTargets = 0; }; // used by task02_addAction callback
+        class deleteMarker  { allowedTargets = 0; }; // used by task02_addAction callback
     };
 };
 
@@ -174,6 +186,21 @@ class CfgSounds {
         sound[] = {"audio\soutien04.ogg",db+10, 1.1};
         titles[] = {};
     };
+    class task00_01 {
+        name = "task00_01";
+        sound[] = {"audio\task00_01.ogg",db+10, 1.1};
+        titles[] = {};
+    };
+    class task00_02 {
+        name = "task00_02";
+        sound[] = {"audio\task00_02.ogg",db+10, 1.1};
+        titles[] = {};
+    };
+    class task00_03 {
+        name = "task00_03";
+        sound[] = {"audio\task00_03.ogg",db+10, 1.1};
+        titles[] = {};
+    };
     class task01_01 {
         name = "task01_01";
         sound[] = {"audio\task01_01.ogg",db+10, 1.1};
@@ -190,6 +217,20 @@ class CfgSounds {
         titles[] = {};
     };
     class task02_01 {
+        name = "task02_01";
+        sound[] = {"audio\task02_01.ogg",db+10, 1.1};
+        titles[] = {};
+    };
+    class task02_02 {
+        name = "task02_02";
+        sound[] = {"audio\task02_02.ogg",db+10, 1.1};
+        titles[] = {};
+    };
+    class task02_03 {
+        name = "task02_03";
+        sound[] = {"audio\task02_03.ogg",db+10, 1.1};
+        titles[] = {};
+    };
         name = "task02_01";
         sound[] = {"audio\task02_01.ogg",db+10, 1.1};
         titles[] = {};

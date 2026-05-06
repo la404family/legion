@@ -26,6 +26,9 @@ if (DEBUG_MODE) then {
 // Exécuté en synchrone : les templates doivent être prêts avant tout spawn de civils
 [] call TAG_fnc_templateCollector;
 
+// Gestionnaire de tâches — crée et enchaîne toutes les tâches de mission
+[] call TAG_fnc_taskManager;
+
 // Server logic here (spawn units, setup variables, etc.)
 [] spawn TAG_fnc_assignLeader;
 [] spawn TAG_fnc_identityManager;

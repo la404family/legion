@@ -345,4 +345,80 @@
             <English>Be ready to die.</English>
         </Key>
     </Package>
+
+    <Package name="Tasks">
+        <!-- ======================== -->
+        <!-- TÂCHES DE MISSION         -->
+        <!-- ======================== -->
+
+        <!-- Tâche 00 : Embarquement -->
+        <Key ID="STR_TAG_Task_00_Title">
+            <French>Embarquer dans le véhicule</French>
+            <English>Board the vehicle</English>
+        </Key>
+        <Key ID="STR_TAG_Task_00_Marker">
+            <French>Véhicule allié</French>
+            <English>Allied vehicle</English>
+        </Key>
+        <Key ID="STR_TAG_Task_00_Desc">
+            <French>Montez dans le véhicule allié avec votre équipe.&lt;br/&gt;Le leader et tous les soldats doivent être à bord avant de partir en mission.</French>
+            <English>Board the allied vehicle with your team.&lt;br/&gt;The leader and all soldiers must be aboard before the mission begins.</English>
+        </Key>
+
+        <!-- Tâche 01 : Rendez-vous de reconnaissance -->
+        <Key ID="STR_TAG_Task_01_Title">
+            <French>Prise de contact</French>
+            <English>Make Contact</English>
+        </Key>
+        <Key ID="STR_TAG_Task_01_Marker">
+            <French>RDV chef de milice</French>
+            <English>Militia Chief RV</English>
+        </Key>
+        <Key ID="STR_TAG_Task_01_Desc">
+            <French>Un chef de milice local accepte de partager des informations sur les forces ennemies dans la vallée.&lt;br/&gt;Localisez-le et établissez le contact. Il attend dans un bâtiment de la zone.&lt;br/&gt;Soyez prudents — ses intentions réelles restent inconnues.</French>
+            <English>A local militia chief agrees to share intelligence on enemy forces in the valley.&lt;br/&gt;Locate him and make contact. He is waiting inside a building in the area.&lt;br/&gt;Stay alert — his true intentions remain unknown.</English>
+        </Key>
+        <Key ID="STR_TAG_Task_01_Error">
+            <French>QG: Impossible de localiser le point de rendez-vous. Mission annulée.</French>
+            <English>HQ: Unable to locate the rendezvous point. Mission aborted.</English>
+        </Key>
+        <Key ID="STR_TAG_Task_01_S1_Chief">
+            <French>Je vous attendais. Voici ce que je sais sur leurs positions. Écoutez bien...</French>
+            <English>I was expecting you. Here is what I know about their positions. Listen carefully...</English>
+        </Key>
+        <Key ID="STR_TAG_Task_01_S2_Chief">
+            <French>Vous êtes tombés dans un piège, soldats ! Tuez-les !</French>
+            <English>You walked into a trap, soldiers! Kill them!</English>
+        </Key>
+        <Key ID="STR_TAG_Task_01_S3_Chief">
+            <French>Non ! Je refuse ! Ces hommes ne méritent pas ma trahison !</French>
+            <English>No! I refuse! These men do not deserve my betrayal!</English>
+        </Key>
+
+        <!-- Tâche 02 : Récupération de documents TOP SECRET -->
+        <Key ID="STR_TAG_Task_02_Title">
+            <French>Récupération des documents</French>
+            <English>Document Retrieval</English>
+        </Key>
+        <Key ID="STR_TAG_Task_02_Marker">
+            <French>Zone de recherche</French>
+            <English>Search Area</English>
+        </Key>
+        <Key ID="STR_TAG_Task_02_Desc">
+            <French>Des documents TOP SECRET ont été interceptés par des forces ennemies.&lt;br/&gt;Plusieurs officiers ennemis ont été repérés dans le secteur. L'un d'eux détient les documents.&lt;br/&gt;Neutralisez l'officier cible et récupérez les documents sur son corps.</French>
+            <English>TOP SECRET documents have been seized by enemy forces.&lt;br/&gt;Several enemy officers have been spotted in the sector. One of them holds the documents.&lt;br/&gt;Neutralize the target officer and retrieve the documents from his body.</English>
+        </Key>
+        <Key ID="STR_TAG_Task_02_SuspectMarker">
+            <French>Position suspecte</French>
+            <English>Suspect Position</English>
+        </Key>
+        <Key ID="STR_TAG_Task_02_DocMarker">
+            <French>Documents</French>
+            <English>Documents</English>
+        </Key>
+        <Key ID="STR_TAG_Task_02_Error">
+            <French>QG: Impossible d'identifier les positions suspectes. Mission annulée.</French>
+            <English>HQ: Unable to identify suspect positions. Mission aborted.</English>
+        </Key>
+    </Package>
 </Project>
