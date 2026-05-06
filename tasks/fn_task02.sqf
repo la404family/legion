@@ -257,31 +257,45 @@ private _snd = selectRandom ["task02_01", "task02_02", "task02_03"];
 
         if (DEBUG_MODE) then { diag_log "[TAG] task02: Officier cible éliminé. Dépôt des documents."; };
 
-        // Spawn du document au sol — getPos/setPos (AGL) + NONE pour éviter collision terrain
-        private _bodyPos = getPos _target;
-        private _doc = createVehicle ["Land_Document_01_F", _bodyPos, [], 0, "NONE"];
-        _doc setPos [_bodyPos select 0, _bodyPos select 1, (_bodyPos select 2) + 0.05];
+        // Spawn du document au sol — utiliser getPosASL pour avoir la hauteur absolue exacte
+        private _bodyPos = getPosASL _target;
+        // Chercher une position libre à 1m autour du corps pour éviter le clipping
+        private _spawnPos2D = [_bodyPos select 0, _bodyPos select 1, 0];
+        private _freePos = _spawnPos2D findEmptyPosition [0, 2, "Land_Document_01_F"];
+        private _finalPos = if (count _freePos > 0) then [
+            { [_freePos select 0, _freePos select 1, _bodyPos select 2] },
+            { _bodyPos }
+        ];
+        private _doc = createVehicle ["Land_Document_01_F", ASLToAGL _bodyPos, [], 0, "NONE"];
+        _doc setPosASL [_finalPos select 0, _finalPos select 1, (_finalPos select 2) + 0.1];
 
         // Publier l'objet comme variable globale : fallback si remoteExec arrive avant createVehicle
         TAG_Task02_Doc = _doc;
         publicVariable "TAG_Task02_Doc";
 
+        if (DEBUG_MODE) then {
+            diag_log format ["[TAG] task02: Document créé — %1 — pos ASL: %2", _doc, getPosASL _doc];
+        };
+
         // Marqueur document
         deleteMarker "TAG_task02_doc";
         private _mDoc = "TAG_task02_doc";
-        createMarker [_mDoc, _bodyPos];
+        createMarker [_mDoc, ASLToAGL _bodyPos];
         _mDoc setMarkerType "mil_objective";
         _mDoc setMarkerColor "ColorWhite";
         _mDoc setMarkerText (localize "STR_TAG_Task_02_DocMarker");
 
         // Mettre à jour la destination de la tâche BIS
-        ["task_02_intel", _bodyPos, true] call BIS_fnc_taskSetDestination;
+        ["task_02_intel", ASLToAGL _bodyPos, true] call BIS_fnc_taskSetDestination;
 
-        // Attendre 1s que createVehicle se propage aux clients AVANT le remoteExec
-        sleep 1;
+        // Attendre 3s que createVehicle ET publicVariable se propagent aux clients
+        sleep 3;
 
         // Ajouter l'action de récupération sur le document (tous les clients)
-        [_doc] remoteExec ["TAG_fnc_task02_addAction", 0, str _doc];
+        // Ne PAS passer _doc en argument : si l'objet n'est pas encore propagé côté client,
+        // params le capture comme objNull et la variable locale ne change jamais.
+        // Le client récupère _doc lui-même depuis TAG_Task02_Doc (publicVariable).
+        [] remoteExec ["TAG_fnc_task02_addAction", 0];
 
         // Attendre la récupération ou l'échec
         waitUntil {

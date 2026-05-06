@@ -23,24 +23,25 @@
 
 if (!hasInterface) exitWith {};
 
-params [
-    ["_doc", objNull, [objNull]]
-];
+// Ne PAS utiliser params pour récupérer le document :
+// si l'objet n'est pas encore propagé côté client au moment du remoteExec,
+// params le capturait comme objNull et la variable locale ne changeait jamais.
+// On récupère directement depuis TAG_Task02_Doc (publicVariable du serveur).
+private _doc = objNull;
+private _waited = 0;
 
-// Attendre que l'objet soit disponible localement (propagation réseau, max 10s)
-private _timeout = time + 10;
-waitUntil { (!isNull _doc) || (time > _timeout) };
-
-// Fallback : récupérer via publicVariable si l'objet n'est pas arrivé via remoteExec
-if (isNull _doc) then {
+while { isNull _doc && _waited < 30 } do {
+    sleep 1;
     _doc = missionNamespace getVariable ["TAG_Task02_Doc", objNull];
-    if (DEBUG_MODE) then {
-        diag_log "[TAG] task02_addAction: _doc était null, récupéré via TAG_Task02_Doc.";
-    };
+    _waited = _waited + 1;
 };
 
 if (isNull _doc) exitWith {
-    if (DEBUG_MODE) then { diag_log "[TAG] task02_addAction: Objet document introuvable — abandon."; };
+    if (DEBUG_MODE) then { diag_log "[TAG] task02_addAction: Document introuvable après 30s — abandon."; };
+};
+
+if (DEBUG_MODE) then {
+    diag_log format ["[TAG] task02_addAction: Document trouvé en %1s — %2 — pos: %3", _waited, _doc, getPos _doc];
 };
 
 _doc addAction [
@@ -65,10 +66,14 @@ _doc addAction [
         ["task_02_intel", "SUCCEEDED", true] remoteExec ["BIS_fnc_taskSetState", 0];
     },
     [],
-    10,
-    true,
-    true,
-    "",
-    "alive player",
-    3
+    10,      // priorité
+    true,    // showWindow
+    true,    // hideOnUse
+    "",      // shortcut
+    "alive player && player distance _target < 5",  // condition : 5m (terrain irrégulier)
+    5        // distance maximale d'affichage de l'action (mètres)
 ];
+
+if (DEBUG_MODE) then {
+    diag_log format ["[TAG] task02_addAction: addAction ajouté sur %1", _doc];
+};
