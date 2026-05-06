@@ -30,8 +30,18 @@ if (isServer) then {
         };
         
         private _destPos = _hqPos;
-        private _combatPos = _destPos getPos [800, random 360];
+        private _combatAngle = random 360;
+        private _combatPos = _destPos getPos [800, _combatAngle];
         _combatPos set [2, 0];
+        // Recherche d'une zone plate et dégagée (même logique que fn_callAmmoDrop)
+        private _flatCheck = _combatPos isFlatEmpty [10, -1, 0.2, 10, 0, false, objNull];
+        if (_flatCheck isEqualTo []) then {
+            private _safePos = [_combatPos, 0, 300, 10, 0, 0.2, 0, [], _combatPos] call BIS_fnc_findSafePos;
+            if (_safePos isEqualType [] && { count _safePos >= 2 } && { _safePos distance2D _combatPos < 500 }) then {
+                _combatPos = _safePos;
+                _combatPos set [2, 0];
+            };
+        };
         
         // Variables partagées pour les caméras clientes
         MISSION_intro_combatPos = _combatPos;
@@ -43,8 +53,8 @@ if (isServer) then {
 
         // Distancer les deux camps d'environ 100m pour qu'ils ne soient pas entassés
         private _angleOpfor = random 360;
-        private _posOpfor = _combatPos getPos [50, _angleOpfor];
-        private _posIndep = _combatPos getPos [50, _angleOpfor + 180];
+        private _posOpfor = _combatPos getPos [80, _angleOpfor];
+        private _posIndep = _combatPos getPos [80, _angleOpfor + 180];
 
         // Spawn de quelques insurgés/milices (OPFOR O_G_Soldier_F vs INDEP I_G_Soldier_F)
         for "_i" from 1 to 6 do {
@@ -59,25 +69,37 @@ if (isServer) then {
             _fakeUnits pushBack _u2;
         };
 
-        // Forcer le combat statique pour la caméra
+        // Partager les références d'unités avec les clients pour le suivi caméra
+        MISSION_intro_unit_opfor = leader _grpOpfor;
+        publicVariable "MISSION_intro_unit_opfor";
+        MISSION_intro_unit_indep = leader _grpIndep;
+        publicVariable "MISSION_intro_unit_indep";
+
+        // Les deux groupes s'avancent l'un vers l'autre et s'engagent
         _grpOpfor setCombatMode "RED";
         _grpIndep setCombatMode "RED";
+        _grpOpfor setBehaviour "COMBAT";
+        _grpIndep setBehaviour "COMBAT";
+
+        // OPFOR avance vers la position INDEP, INDEP avance vers la position OPFOR
+        { _x doMove _posIndep } forEach units _grpOpfor;
+        { _x doMove _posOpfor } forEach units _grpIndep;
+
         {
-            _x disableAI "PATH";
             if (random 1 > 0.5) then { _x setUnitPos "MIDDLE"; } else { _x setUnitPos "DOWN"; };
-            _x allowDamage false; // on ne veut pas qu'ils meurent trop vite pendant la cinématique
+            _x allowDamage false; // on ne veut pas qu'ils meurent pendant la cinématique
         } forEach _fakeUnits;
         
-        // Supprimer les unités de la scène de guerre rapidement après que la caméra les ait quittés (environ 30s)
+        // Supprimer les unités de la scène de guerre après les plans de combat (environ 45s)
         [_fakeUnits] spawn {
             params ["_units"];
-            sleep 30;
+            sleep 45;
             { deleteVehicle _x } forEach _units;
         };
         
         // --- 2. Création et gestion de l'hélicoptère ---
-        // Distance réduite pour ne pas faire durer le vol inutilement (environ 2500m)
-        private _startDist = 2500; 
+        // Distance plus grande pour allonger la cinématique de vol (~4500m)
+        private _startDist = 4500; 
         private _startDir = (_destPos getDir _combatPos) - 180; 
         private _startPos = _destPos getPos [_startDist, _startDir];
         _startPos set [2, 100];   
@@ -178,10 +200,15 @@ if (hasInterface) then {
         } forEach allUnits;
 
         diag_log "[INTRO] CLIENT: Script démarré";
-        waitUntil { !isNil "MISSION_intro_heli" && !isNil "MISSION_intro_combatPos" };  
-        
-        private _heli = MISSION_intro_heli;
-        private _combatPos = MISSION_intro_combatPos;
+        waitUntil {
+            !isNil "MISSION_intro_heli" && !isNil "MISSION_intro_combatPos" &&
+            !isNil "MISSION_intro_unit_opfor" && !isNil "MISSION_intro_unit_indep"
+        };
+
+        private _heli         = MISSION_intro_heli;
+        private _combatPos    = MISSION_intro_combatPos;
+        private _unitOpfor    = MISSION_intro_unit_opfor;
+        private _unitIndep    = MISSION_intro_unit_indep;
 
         cutText ["", "BLACK FADED", 999];   
         0 fadeSound 0;                       
@@ -200,120 +227,169 @@ if (hasInterface) then {
         _ppGrain ppEffectAdjust [0.15, 1.5, 1.5, 0.1, 1.0, false];   
         _ppGrain ppEffectCommit 0;
 
-        playMusic "intro1a";    
-        3 fadeSound 1;          
-        
         // Initialisation de la caméra
         private _cam = "camera" camCreate [_combatPos select 0, _combatPos select 1, 20];
         _cam cameraEffect ["INTERNAL", "BACK"];
         showCinemaBorder true;
         sleep 2;
-        
-        // Lancement en parallèle des sous-titres, centrés HAUTEUR/LARGEUR (-1, -1) 
-        // avec la DUREE EXACTE IDENTIQUE pour chaque texte découpé selon le fichier STORY.md
-        // Support multicaviers (Stringtable) et check dynamique (Leader/Membre)
-        [] spawn {
-            private _line11 = localize "STR_Intro_Line11_Member";
-            if (leader group player == player) then {
-                _line11 = localize "STR_Intro_Line11_Leader";
-            };
 
-            private _texts = [
-                localize "STR_Intro_Line1",
-                localize "STR_Intro_Line2",
-                localize "STR_Intro_Line3",
-                localize "STR_Intro_Line4",
-                localize "STR_Intro_Line5",
-                localize "STR_Intro_Line6",
-                localize "STR_Intro_Line7",
-                localize "STR_Intro_Line8",
-                localize "STR_Intro_Line9",
-                localize "STR_Intro_Line10",
-                format [_line11, name player],
-                localize "STR_Intro_Line12",
-                localize "STR_Intro_Line13",
-                localize "STR_Intro_Line14",
-                localize "STR_Intro_Line15",
-                localize "STR_Intro_Line16"
-            ];
-            private _duration = 3.9; // Ajustement du temps pour répartir les 16 segments sur ~62s (taille de l'intro)
-            sleep 4; // Attendre le fondu
-            
+        // ==========================================
+        // CONFIGURATION TEXTE — indépendant de la caméra
+        // Modifier ces 4 valeurs pour changer le timing de TOUS les textes
+        // ==========================================
+        // Cinématique totale ~150s — texte réparti uniformément sur toute la durée
+        // 16 segments × 8.9s = 142s — démarre à t≈8s, finit à t≈150s
+        private _txtFadeIn  = 0.5;  // Fondu entrant (s)
+        private _txtVisible = 7.9;  // Pleine visibilité (s)
+        private _txtFadeOut = 0.5;  // Fondu sortant (s)
+        private _txtDelay   = 3.0;  // Délai avant le 1er texte (après fondu écran)
+
+        private _line11 = localize "STR_Intro_Line11_Member";
+        if (leader group player == player) then {
+            _line11 = localize "STR_Intro_Line11_Leader";
+        };
+        private _introTexts = [
+            localize "STR_Intro_Line1",
+            localize "STR_Intro_Line2",
+            localize "STR_Intro_Line3",
+            localize "STR_Intro_Line4",
+            localize "STR_Intro_Line5",
+            localize "STR_Intro_Line6",
+            localize "STR_Intro_Line7",
+            localize "STR_Intro_Line8",
+            localize "STR_Intro_Line9",
+            localize "STR_Intro_Line10",
+            format [_line11, name player],
+            localize "STR_Intro_Line12",
+            localize "STR_Intro_Line13",
+            localize "STR_Intro_Line14",
+            localize "STR_Intro_Line15",
+            localize "STR_Intro_Line16"
+        ];
+
+        // Thread texte — totalement isolé de la caméra
+        // titleText "PLAIN" : texte centré STATIQUE, aucun mouvement vertical
+        // Note : titleText ne parse pas le HTML — texte brut uniquement
+        // Durée identique pour CHAQUE segment : _txtFadeIn + _txtVisible + _txtFadeOut
+        [_introTexts, _txtDelay, _txtFadeIn, _txtVisible, _txtFadeOut] spawn {
+            params ["_texts", "_delay", "_fadeIn", "_visible", "_fadeOut"];
+            sleep _delay;
             {
-                [
-                    format ["<t size='1.1' color='#ffffff' font='PuristaMedium' shadow='2' align='center'>%1</t>", _x],
-                    -1, -1, _duration, 1, 0, 780
-                ] spawn BIS_fnc_dynamicText;
-                sleep _duration;
+                // fade in → reste immobile → fade out → silence avant le suivant
+                titleText [_x, "PLAIN", _fadeIn];
+                sleep (_fadeIn + _visible);
+                titleText ["", "PLAIN", _fadeOut];
+                sleep _fadeOut;
             } forEach _texts;
         };
 
-        cutText ["", "BLACK IN", 3];   
+        cutText ["", "BLACK IN", 3];
+        // Sons ambiants (combat) audibles dès le début — musique après seulement
+        3 fadeSound 1;
 
         // ==========================================
-        // PLAN 1 : Vue large et plongeante sur les combats
+        // PLAN 1 : Vue large plongeante — introduction du conflit
+        // Caméra haute, on découvre le champ de bataille de loin
         // ==========================================
-        _cam camPreparePos [(_combatPos select 0) - 80, (_combatPos select 1) - 80, 25];
+        _cam camPreparePos [(_combatPos select 0) - 120, (_combatPos select 1) - 120, 40];
         _cam camPrepareTarget _combatPos;
-        _cam camPrepareFOV 0.75;
+        _cam camPrepareFOV 0.8;
         _cam camCommitPrepared 0;
 
-        _cam camPreparePos [(_combatPos select 0) - 20, (_combatPos select 1) - 40, 10];
+        _cam camPreparePos [(_combatPos select 0) - 30, (_combatPos select 1) - 50, 12];
         _cam camPrepareTarget [(_combatPos select 0), (_combatPos select 1), 2];
-        _cam camPrepareFOV 0.6;
-        _cam camCommitPrepared 8; // Zoom lent
+        _cam camPrepareFOV 0.55;
+        _cam camCommitPrepared 10;
+        sleep 10;
+
+        // ==========================================
+        // PLAN 2 : Suivi épaule — unité OPFOR en approche
+        // ==========================================
+        detach _cam;
+        _cam attachTo [_unitOpfor, [-0.6, -1.8, 0.9]];
+        _cam camPrepareTarget (_unitOpfor getPos [5, getDir _unitOpfor]);
+        _cam camPrepareFOV 0.5;
+        _cam camCommitPrepared 0;
+        _cam camPrepareTarget (_unitOpfor getPos [8, getDir _unitOpfor]);
+        _cam camPrepareFOV 0.38;
+        _cam camCommitPrepared 8;
         sleep 8;
 
         // ==========================================
-        // PLAN 2 : Plan serré (Tension sur l'action)
+        // PLAN 3 : Suivi épaule — unité INDEP en approche
         // ==========================================
-        _cam camPreparePos [(_combatPos select 0) + 15, (_combatPos select 1) + 10, 1.5];
-        _cam camPrepareTarget [(_combatPos select 0) - 5, (_combatPos select 1) - 5, 1];
-        _cam camPrepareFOV 0.4;
+        detach _cam;
+        _cam attachTo [_unitIndep, [0.6, -1.8, 0.9]];
+        _cam camPrepareTarget (_unitIndep getPos [5, getDir _unitIndep]);
+        _cam camPrepareFOV 0.5;
+        _cam camCommitPrepared 0;
+        _cam camPrepareTarget (_unitIndep getPos [8, getDir _unitIndep]);
+        _cam camPrepareFOV 0.38;
+        _cam camCommitPrepared 8;
+        sleep 8;
+
+        // ==========================================
+        // PLAN 4 : Vue haute dramatique — la mêlée vue du ciel
+        // Caméra en hauteur qui descend lentement vers le combat
+        // ==========================================
+        detach _cam;
+        _cam camPreparePos [(_combatPos select 0) + 5, (_combatPos select 1) + 80, 35];
+        _cam camPrepareTarget [(_combatPos select 0), (_combatPos select 1), 1];
+        _cam camPrepareFOV 0.6;
         _cam camCommitPrepared 0;
 
-        _cam camPreparePos [(_combatPos select 0) + 12, (_combatPos select 1) + 12, 1.8];
-        _cam camPrepareFOV 0.3; // Encore plus serré
-        _cam camCommitPrepared 6;
-        sleep 6;
-        
+        _cam camPreparePos [(_combatPos select 0) - 10, (_combatPos select 1) + 30, 10];
+        _cam camPrepareFOV 0.38;
+        _cam camCommitPrepared 14;
+        sleep 14;
+
+        // Musique lancée après la scène de combat au sol
+        playMusic "intro1a";
+
         // ==========================================
-        // PLAN 3 : Attaché derrière l'hélicoptère (Majestueux)
+        // PLAN HELI-A : Poursuite derrière l'hélicoptère — découverte du paysage
+        // Caméra 35m derrière, 10m au-dessus : on voit l'horizon défiler
         // ==========================================
-        _cam camPrepareTarget objNull; // Détache la cible fixe
-        _cam attachTo [_heli, [-12, -30, 8]]; // Derrière et au dessus
-        _cam setVectorDirAndUp [[0, 1, -0.15], [0, 0, 1]];
+        _cam attachTo [_heli, [0, -35, 10]];
+        _cam camSetTarget _heli;
         _cam camPrepareFOV 0.8;
         _cam camCommitPrepared 0;
-        sleep 10;
-        
+        _cam camPrepareFOV 0.6;
+        _cam camCommitPrepared 20;
+        sleep 20;
+
         // ==========================================
-        // PLAN 4 : Traveling latéral sur l'hélicoptère (Vitesse et Action)
+        // PLAN HELI-B : Profil droit — vue cinéma classique
+        // Caméra 28m sur le flanc droit, légèrement au-dessus — paysage en arrière-plan
         // ==========================================
         detach _cam;
-        _cam attachTo [_heli, [20, 5, 2]]; // Attaché sur le flanc droit
-        _cam setVectorDirAndUp [[-1, -0.2, 0.1], [0, 0, 1]]; // Regarde l'hélico
+        _cam attachTo [_heli, [28, 0, 6]];
+        _cam camSetTarget _heli;
+        _cam camPrepareFOV 0.75;
+        _cam camCommitPrepared 0;
+        _cam camPrepareFOV 0.52;
+        _cam camCommitPrepared 20;
+        sleep 20;
+
+        // ==========================================
+        // PLAN HELI-C : Vue plongeante du ciel — l'hélico vu d'en haut
+        // Caméra 65m au-dessus solidaire : on voit l'hélico ET le terrain en dessous
+        // ==========================================
+        detach _cam;
+        _cam attachTo [_heli, [0, 0, 65]];
+        _cam camSetTarget _heli;
         _cam camPrepareFOV 0.65;
         _cam camCommitPrepared 0;
-
-        _cam camPrepareFOV 0.5; // Zoom léger sur le profil
-        _cam camCommitPrepared 12;
-        sleep 12;
+        _cam camPrepareFOV 0.45;
+        _cam camCommitPrepared 18;
+        sleep 18;
 
         // ==========================================
-        // PLAN 5 : Intérieur/Proche porte ou vue depuis le nez
+        // PLAN HELI-D : Caméra fixe au sol sur la LZ — ras des bottes
+        // Vue dramatique à 0.3m du sol, 35m à côté — l'hélico grossit dans le cadre
         // ==========================================
         detach _cam;
-        _cam attachTo [_heli, [3, 2, -1.5]]; // Très proche de la porte latérale ouverte
-        _cam setVectorDirAndUp [[0, -1, 0], [0, 0, 1]]; // Regarde vers l'arrière dans la soute
-        _cam camPrepareFOV 0.7;
-        _cam camCommitPrepared 0;
-        sleep 12;
-        
-        // ==========================================
-        // PLAN 6 : Débarquement final (Fixe regardant atterrir l'hélico)
-        // ==========================================
-        detach _cam;
+        _cam camSetTarget objNull;
         private _lzPos = [0,0,0];
         if (!isNil "heliport_00" && { !isNull heliport_00 }) then {
             _lzPos = getPosATL heliport_00;
@@ -321,16 +397,38 @@ if (hasInterface) then {
             private _fb = missionNamespace getVariable ["player_0", objNull];
             if (!isNull _fb) then { _lzPos = getPosATL _fb; };
         };
-        
-        _cam camPreparePos [(_lzPos select 0) + 30, (_lzPos select 1) - 40, (_lzPos select 2) + 2];
-        _cam camPrepareTarget _heli;
-        _cam camPrepareFOV 0.7;
+        _cam camPreparePos [(_lzPos select 0) + 35, (_lzPos select 1) - 20, (_lzPos select 2) + 0.3];
+        _cam camSetTarget _heli;
+        _cam camPrepareFOV 0.85;
         _cam camCommitPrepared 0;
+        _cam camPrepareFOV 0.3;  // Zoom fort : l'hélico grossit progressivement
+        _cam camCommitPrepared 15;
+        sleep 15;
 
-        _cam camPrepareFOV 0.45;
-        _cam camCommitPrepared 12; // Suit l'hélico cible en zoomant doucement
-        sleep 11;
-        
+        // ==========================================
+        // PLAN HELI-E : Nez-à-nez — l'hélico arrive droit sur la caméra
+        // Caméra 80m devant la LZ à hauteur d'homme — l'hélico passe au-dessus
+        // ==========================================
+        _cam camPreparePos [(_lzPos select 0) - 80, (_lzPos select 1) + 10, (_lzPos select 2) + 1.5];
+        _cam camSetTarget _heli;
+        _cam camPrepareFOV 0.75;
+        _cam camCommitPrepared 0;
+        _cam camPrepareFOV 0.35;
+        _cam camCommitPrepared 15;
+        sleep 15;
+
+        // ==========================================
+        // PLAN FINAL : Vue surélevée LZ — atterrissage et débarquement
+        // Caméra à 20m de hauteur, large — toute la LZ visible, hélico se pose
+        // ==========================================
+        _cam camPreparePos [(_lzPos select 0) + 45, (_lzPos select 1) + 45, (_lzPos select 2) + 20];
+        _cam camSetTarget _heli;
+        _cam camPrepareFOV 0.75;
+        _cam camCommitPrepared 0;
+        _cam camPrepareFOV 0.5;
+        _cam camCommitPrepared 20;
+        sleep 20;
+
         // Attente du débarquement effectif du joueur
         waitUntil { vehicle player == player };
 
