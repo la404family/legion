@@ -236,7 +236,7 @@ private _owner = west;
 [] spawn {
     // ─ Task 01 : déclenche après embarquement ─────────────────────────────────
     waitUntil { ["task_00_embark"] call BIS_fnc_taskCompleted };
-    [] call TAG_fnc_task01;
+    [] call TAG_fnc_task02;
 
     // ─ Task 02 : déclenche après le rendez-vous de reconnaissance ────────────
     waitUntil { (["task_01_recon"] call BIS_fnc_taskState) in ["SUCCEEDED", "FAILED"] };

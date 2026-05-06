@@ -238,20 +238,6 @@ class CfgSounds {
         sound[] = {"audio\task02_03.ogg",db+10, 1.1};
         titles[] = {};
     };
-        name = "task02_01";
-        sound[] = {"audio\task02_01.ogg",db+10, 1.1};
-        titles[] = {};
-    };
-    class task02_02 {
-        name = "task02_02";
-        sound[] = {"audio\task02_02.ogg",db+10, 1.1};
-        titles[] = {};
-    };
-    class task02_03 {
-        name = "task02_03";
-        sound[] = {"audio\task02_03.ogg",db+10, 1.1};
-        titles[] = {};
-    };
     class task03_01 {
         name = "task03_01";
         sound[] = {"audio\task03_01.ogg",db+10, 1.1};

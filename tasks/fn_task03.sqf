@@ -187,6 +187,8 @@ private _snd = selectRandom ["task03_01", "task03_02", "task03_03"];
     missionNamespace setVariable ["TAG_Task03_Failed",   false, true];
 
     // ── Tâche BIS ─────────────────────────────────────────────────────────────
+    // PAS de destination initiale (objNull) : on ne révèle pas la position de l'otage.
+    // La destination sera mise à jour sur la LZ seulement après la libération.
     [
         west,
         ["task_03_hostage"],
@@ -195,7 +197,7 @@ private _snd = selectRandom ["task03_01", "task03_02", "task03_03"];
             localize "STR_TAG_Task_03_Title",
             localize "STR_TAG_Task_03_Marker"
         ],
-        _hostagePos,
+        objNull,
         "AUTOASSIGNED",
         5,
         true,
@@ -236,19 +238,25 @@ private _snd = selectRandom ["task03_01", "task03_02", "task03_03"];
 
     // Animation de libération sur tous les clients
     [_hostage, "Acts_ExecutionVictim_Unbow"] remoteExec ["switchMove", 0];
-    sleep 8.5;
+    sleep 6;
 
-    // Réactiver l'IA de l'otage (unité locale au serveur)
+    // Réactiver l'IA progressivement pour éviter le pop visuel
     _hostage enableAI "ANIM";
+    _hostage playMoveNow "AmovPercMstpSnonWnonDnon"; // pose debout neutre
+    sleep 2.5;
+
     _hostage enableAI "MOVE";
     _hostage setCaptive false;
     _hostage setBehaviour "CARELESS";
     _hostage setUnitPos "UP";
     _hostage allowFleeing 0;
 
-    // ── Boucle de suivi : l'otage marche vers le joueur le plus proche ────────
+    // ── Boucle de suivi : l'otage suit le leader (pied ou véhicule) ──────────
     [_hostage] spawn {
         params ["_h"];
+        private _lastVeh      = objNull; // dernier véhicule du leader connu
+        private _boardingVeh  = objNull; // véhicule vers lequel on marche
+
         while {
             alive _h
             && !(_h getVariable ["TAG_Task03_InHeli", false])
@@ -257,6 +265,7 @@ private _snd = selectRandom ["task03_01", "task03_02", "task03_03"];
             _h setUnitPos "UP";
             _h setBehaviour "CARELESS";
 
+            // Trouver le joueur le plus proche
             private _nearest = objNull;
             private _minD    = 99999;
             {
@@ -266,20 +275,93 @@ private _snd = selectRandom ["task03_01", "task03_02", "task03_03"];
                 };
             } forEach allPlayers;
 
-            if (!isNull _nearest) then { _h doMove (getPos _nearest); };
-            sleep 5;
+            if (!isNull _nearest) then {
+                private _leaderVeh = vehicle _nearest;
+
+                if (_leaderVeh != _nearest) then {
+                    // ── Leader dans un véhicule ─────────────────────────────────
+                    if (vehicle _h != _leaderVeh) then {
+                        private _distVeh = _h distance2D _leaderVeh;
+                        if (_distVeh < 5) then {
+                            // Téléportation directe autorisée à moins de 5m
+                            _h moveInCargo _leaderVeh;
+                            _boardingVeh = objNull;
+                        } else {
+                            // S'approcher en marchant vers la porte la plus proche
+                            private _doorPos = _leaderVeh modelToWorld (boundingBoxReal _leaderVeh select 0);
+                            _h doMove _doorPos;
+                        };
+                    } else {
+                        // Déjà à bord — réinitialiser
+                        _boardingVeh = objNull;
+                    };
+                } else {
+                    // ── Leader à pied ───────────────────────────────────────
+                    if (vehicle _h != _h) then {
+                        // Descendre du véhicule proprement
+                        unassignVehicle _h;
+                        [_h] orderGetIn false;
+                        _h action ["GetOut", vehicle _h];
+                        _boardingVeh = objNull;
+                    } else {
+                        // Annuler un ordre d'embarquement résidu si le leader est ressorti
+                        if (!isNull _boardingVeh && vehicle _h == _h) then {
+                            unassignVehicle _h;
+                            _boardingVeh = objNull;
+                        };
+                        // Suivre à pied avec une marge (ne pas coller)
+                        if (_h distance2D _nearest > 4) then {
+                            _h doMove (getPos _nearest);
+                        };
+                    };
+                };
+            };
+
+            sleep 2;
         };
     };
 
     // ── Spawn de l'hélicoptère d'extraction ───────────────────────────────────
-    // Trouver une LZ dégagée entre 300 et 550m de la position actuelle de l'otage
+    // LZ au plus proche de l'otage (80-150m) sur terrain dégagé
     private _hostageCurrentPos = getPos _hostage;
-    private _lzDir  = random 360;
-    private _lzDist = 300 + random 250;
-    private _lzBase = _hostageCurrentPos getPos [_lzDist, _lzDir];
-    private _lzPos  = _lzBase findEmptyPosition [0, 120, "Land_HelipadEmpty_F"];
-    if (count _lzPos == 0) then { _lzPos = _lzBase; };
-    _lzPos set [2, 0];
+
+
+    // Chercher une LZ plate et dégagée dans un anneau de 80-150m autour de l'otage
+    // Double vérification : isFlatEmpty (gradient terrain) + findEmptyPosition (obstacles)
+    private _found = false;
+    private _lzPos = [];
+    for "_attempt" from 0 to 23 do {
+        if (!_found) then {
+            private _testDir  = (_attempt * 15);
+            private _testDist = 80 + random 70;
+            private _testBase = _hostageCurrentPos getPos [_testDist, _testDir];
+            // Priorité 1 : terrain plat (gradient max 0.15, rayon 10m, pas d'obstacles <5m)
+            private _flatCheck = _testBase isFlatEmpty [10, -1, 0.15, 5, 0, false, objNull];
+            if !(_flatCheck isEqualTo []) then {
+                _lzPos = _flatCheck;
+                _lzPos set [2, 0];
+                _found = true;
+            } else {
+                // Priorité 2 : findEmptyPosition (évite les obstacles, ignore la planéité)
+                private _testFree = _testBase findEmptyPosition [0, 40, "Land_HelipadEmpty_F"];
+                if (count _testFree > 0) then {
+                    _lzPos = _testFree;
+                    _lzPos set [2, 0];
+                    _found = true;
+                };
+            };
+        };
+    };
+    // Fallback final : BIS_fnc_findSafePos dans un rayon élargi
+    if (!_found) then {
+        private _safePos = [_hostageCurrentPos, 80, 500, 10, 0, 0.2, 0, [], _hostageCurrentPos] call BIS_fnc_findSafePos;
+        if (_safePos isEqualType [] && { count _safePos >= 2 } && { _safePos distance2D _hostageCurrentPos < 500 }) then {
+            _lzPos = _safePos;
+        } else {
+            _lzPos = _hostageCurrentPos getPos [100, random 360];
+        };
+        _lzPos set [2, 0];
+    };
 
     // Spawn hélico loin et en altitude (côté Ouest par rapport à l'otage)
     private _heliDir      = (_hostageCurrentPos getDir _lzPos) + 180;
@@ -287,7 +369,7 @@ private _snd = selectRandom ["task03_01", "task03_02", "task03_03"];
     _heliSpawnPos set [2, 280];
 
     private _heliGrp = createGroup [west, true];
-    private _heli    = createVehicle ["B_Heli_Transport_01_F", _heliSpawnPos, [], 0, "FLY"];
+    private _heli    = createVehicle ["B_AMF_Heli_Transport_01_F", _heliSpawnPos, [], 0, "FLY"];
     _heli lock 2; // Verrouillé aux joueurs pendant le trajet
 
     // Équipage
@@ -295,6 +377,10 @@ private _snd = selectRandom ["task03_01", "task03_02", "task03_03"];
     _pilot moveInDriver _heli;
     private _copilot = _heliGrp createUnit ["B_Helipilot_F", _heliSpawnPos, [], 0, "NONE"];
     _copilot moveInCargo _heli;
+
+    // Hélico et équipage invincibles (transport civil)
+    _heli allowDamage false;
+    { _x allowDamage false; } forEach (crew _heli);
 
     _heliGrp setBehaviour "CARELESS";
     _heliGrp setCombatMode "BLUE";
@@ -333,9 +419,22 @@ private _snd = selectRandom ["task03_01", "task03_02", "task03_03"];
             if (DEBUG_MODE) then { diag_log "[TAG] task03: Otage mort pendant l'extraction — FAILED."; };
             missionNamespace setVariable ["TAG_Task03_Failed", true, true];
             ["task_03_hostage", "FAILED", true] remoteExec ["BIS_fnc_taskSetState", 0];
-            // Nettoyage hélico
-            { deleteVehicle _x; } forEach (crew _v);
-            deleteVehicle _v;
+            // L'hélico s'éloigne avant de disparaître
+            [_v, _vGrp] spawn {
+                params ["_heli", "_grp"];
+                if (alive _heli) then {
+                    _heli land "NONE";
+                    _grp setBehaviour "CARELESS";
+                    _grp setCombatMode "BLUE";
+                    _heli flyInHeight 150;
+                    _heli doMove ((getPos _heli) getPos [3000, random 360]);
+                    // Attendre que l'hélico soit en altitude puis laisser voler 45s
+                    waitUntil { sleep 3; !alive _heli || (getPosASL _heli select 2) > 50; };
+                    sleep 45;
+                };
+                { if (alive _x) then { deleteVehicle _x; }; } forEach (crew _heli);
+                if (alive _heli) then { deleteVehicle _heli; };
+            };
         };
 
         // Nettoyage des marqueurs et gardes survivants
@@ -356,7 +455,7 @@ private _snd = selectRandom ["task03_01", "task03_02", "task03_03"];
 
     // ── Atterrissage ──────────────────────────────────────────────────────────
     _heli land "LAND";
-    _heli lock 0; // Déverrouiller pour l'embarquement
+    // Hélico toujours verrouillé aux joueurs (lock 2 = IA peut monter, joueurs bloqués)
 
     // Helipad visuel
     private _helipadObj = createVehicle ["Land_HelipadEmpty_F", _lzPos, [], 0, "CAN_COLLIDE"];
@@ -379,51 +478,63 @@ private _snd = selectRandom ["task03_01", "task03_02", "task03_03"];
     _hostage setVariable ["TAG_Task03_InHeli", true, true]; // Arrête la boucle de suivi
     _hostage setUnitPos "UP";
     _hostage setBehaviour "CARELESS";
+    unassignVehicle _hostage; // Annuler tout ordre de véhicule résiduel
 
-    // Rejoindre le groupe de l'hélico et s'assigner comme cargo
+    // L'otage marche vers l'hélico — orderGetIn gère le pathfinding jusqu'à la porte
     [_hostage] joinSilent _heliGrp;
     _hostage assignAsCargo _heli;
     [_hostage] orderGetIn true;
 
-    // Forcer l'action GetIn si l'otage est bloqué
+    // Aide en cas de blocage : ne réassigner QUE quand l'otage est à la porte (<2.5m)
+    // pour éviter toute téléportation.
     [_hostage, _heli] spawn {
         params ["_h", "_v"];
-        private _tries = 0;
+        private _timeout = time + 90;
         waitUntil {
-            sleep 3;
-            _tries = _tries + 1;
-            // Forcer l'action toutes les 3 tentatives si l'otage est disponible
-            if (_tries % 3 == 0 && unitReady _h) then {
-                _h action ["GetInCargo", _v];
+            sleep 2;
+            if (vehicle _h == _v || !alive _h || !alive _v || time > _timeout) exitWith { true };
+            if (_h distance2D _v < 2.5 && unitReady _h) then {
+                // Réassigner proprement sans action directe
+                _h assignAsCargo _v;
+                [_h] orderGetIn true;
+            } else {
+                // Maintenir le mouvement vers l'hélico si toujours à pied
+                if (vehicle _h == _h) then {
+                    _h doMove (getPos _v);
+                };
             };
-            // Sortie si embarqué, mort, ou timeout (60s)
-            vehicle _h == _v || !alive _h || !alive _v || _tries > 20
+            false
         };
     };
 
     // ── Boucle d'attente embarquement : sécurité anti-joueur ─────────────────
-    private _takeOff = false;
+    // L'hélico reste verrouillé (lock 2) — les joueurs ne peuvent pas monter.
+    // Boucle de sécurité : éjecte tout joueur qui réussirait quand même à monter.
+    [_heli] spawn {
+        params ["_v"];
+        private _allPlayers = [];
+        { if (!isNil _x) then { _allPlayers pushBack (missionNamespace getVariable [_x, objNull]); }; }
+            forEach ["player_0","player_1","player_2","player_3","player_4","player_5","player_6","player_7"];
+        waitUntil {
+            sleep 1;
+            _v lock 2; // S'assurer que le verrou est maintenu
+            {
+                if (!isNull _x && alive _x && vehicle _x == _v) then {
+                    [_x] orderGetIn false;
+                    _x action ["Eject", _v];
+                    (localize "STR_TAG_Task_03_HeliWait") remoteExec ["hint", _x];
+                };
+            } forEach _allPlayers;
+            !(alive _v) || missionNamespace getVariable ["TAG_Task03_Complete", false] || missionNamespace getVariable ["TAG_Task03_Failed", false]
+        };
+    };
+
+    // Attendre que l'otage soit à bord
     waitUntil {
         sleep 2;
-
-        if (!alive _heli || !alive _hostage || missionNamespace getVariable ["TAG_Task03_Failed", false]) exitWith { true };
-
-        private _hostageInHeli  = vehicle _hostage == _heli;
-        private _playersInHeli  = ({ isPlayer _x } count (crew _heli)) > 0;
-
-        if (_hostageInHeli) then {
-            if (_playersInHeli) then {
-                // Joueur à bord → bloquer le décollage
-                (localize "STR_TAG_Task_03_HeliWait") remoteExec ["hint", 0];
-                _heli lock 0;
-            } else {
-                // Otage à bord, aucun joueur → autoriser le décollage
-                _takeOff = true;
-                _heli lock 2;
-            };
-        };
-
-        _takeOff
+        !alive _heli || !alive _hostage
+        || missionNamespace getVariable ["TAG_Task03_Failed", false]
+        || vehicle _hostage == _heli
     };
 
     if (!alive _heli || !alive _hostage || missionNamespace getVariable ["TAG_Task03_Failed", false]) exitWith {
@@ -446,10 +557,7 @@ private _snd = selectRandom ["task03_01", "task03_02", "task03_03"];
 
     if (DEBUG_MODE) then { diag_log "[TAG] task03: Hélico décollé — attente exfiltration."; };
 
-    // Attendre 65s puis conclure (temps de vol suffisant pour quitter la zone)
-    sleep 65;
-
-    // ── Résultat ──────────────────────────────────────────────────────────────
+    // ── Résultat immédiat (tâche résolue dès le décollage avec l'otage vivant) ─
     if (alive _hostage) then {
         if (DEBUG_MODE) then { diag_log "[TAG] task03: Exfiltration réussie — SUCCEEDED."; };
         missionNamespace setVariable ["TAG_Task03_Complete", true, true];
@@ -460,10 +568,24 @@ private _snd = selectRandom ["task03_01", "task03_02", "task03_03"];
         ["task_03_hostage", "FAILED", true] remoteExec ["BIS_fnc_taskSetState", 0];
     };
 
-    // Nettoyage hélico et équipage
-    { deleteVehicle _x; } forEach (crew _heli);
-    deleteVehicle _hostage;
-    deleteVehicle _heli;
+    // ── Attendre que l'hélico soit réellement loin avant de tout supprimer ────
+    // Seuil : >3000m de la LZ OU timeout 120s OU hélico détruit
+    private _exfilStart = time;
+    waitUntil {
+        sleep 3;
+        !alive _heli
+        || (_heli distance2D _lzPos > 3000)
+        || (time - _exfilStart > 120)
+    };
+
+    if (DEBUG_MODE) then {
+        diag_log format ["[TAG] task03: Nettoyage — hélico à %1m de la LZ.", round (_heli distance2D _lzPos)];
+    };
+
+    // Nettoyage hélico, équipage et otage
+    { if (alive _x) then { deleteVehicle _x; }; } forEach (crew _heli);
+    if (alive _hostage) then { deleteVehicle _hostage; };
+    if (alive _heli)    then { deleteVehicle _heli; };
 
     if (DEBUG_MODE) then {
         diag_log format ["[TAG] task03: Terminée — état: %1.", ["task_03_hostage"] call BIS_fnc_taskState];

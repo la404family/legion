@@ -80,11 +80,12 @@ if (DEBUG_MODE) then {
         };
     },
     {},                                                     // codeInterrupted (vide)
-    [],                                                     // Arguments
-    6,                                                      // Durée du maintien (secondes)
-    true,                                                   // Supprimer après usage
-    false,                                                  // Masquer si inconscient
-    false                                                   // Pas d'auto-interaction
+    [],                                                     // Arguments (param 10)
+    6,                                                      // Durée du maintien en secondes (param 11)
+    0,                                                      // Priorité — nombre requis (param 12)
+    true,                                                   // Supprimer après usage (param 13)
+    false,                                                  // Afficher si inconscient (param 14)
+    false                                                   // Infini (param 15)
 ] call BIS_fnc_holdActionAdd;
 
 if (DEBUG_MODE) then {
