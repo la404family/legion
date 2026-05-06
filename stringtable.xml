@@ -60,6 +60,37 @@
             <French>Support > Livraison de Véhicule</French>
             <English>Support > Vehicle Delivery</English>
         </Key>
+        <Key ID="STR_TAG_Action_Support_Drone">
+            <French>Support > Drone de Reconnaissance</French>
+            <English>Support > Reconnaissance Drone</English>
+        </Key>
+    </Package>
+
+    <Package name="Messages_Drone">
+        <!-- ======================== -->
+        <!-- MESSAGES DRONE            -->
+        <!-- ======================== -->
+
+        <Key ID="STR_TAG_Msg_Drone_Denied">
+            <French>QG: Négatif, le drone est déjà déployé sur zone. Terminé.</French>
+            <English>HQ: Negative, drone already deployed on station. Out.</English>
+        </Key>
+        <Key ID="STR_TAG_Msg_Drone_Approved">
+            <French>QG: Demande approuvée. Le drone est en route vers votre position.</French>
+            <English>HQ: Request approved. Drone is en route to your position.</English>
+        </Key>
+        <Key ID="STR_TAG_Msg_Drone_Overhead">
+            <French>QG: Drone sur zone. Surveillance activée. Les contacts détectés apparaissent sur la carte.</French>
+            <English>HQ: Drone on station. Surveillance active. Detected contacts will appear on the map.</English>
+        </Key>
+        <Key ID="STR_TAG_Msg_Drone_RTB">
+            <French>QG: Mission terminée, le drone rentre à la base. Fin de la surveillance.</French>
+            <English>HQ: Mission complete, drone returning to base. Surveillance ended.</English>
+        </Key>
+        <Key ID="STR_TAG_Msg_Drone_Error">
+            <French>QG: Erreur technique, déploiement du drone annulé.</French>
+            <English>HQ: Technical error, drone deployment cancelled.</English>
+        </Key>
     </Package>
 
     <Package name="Messages_RoE">

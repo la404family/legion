@@ -34,6 +34,7 @@ class CfgFunctions {
             class templateCollector {};
             class civilianPresence {};
             class introCinematic {};
+            class callDroneSupport {};
         };
     };
 };
@@ -48,6 +49,7 @@ class CfgRemoteExec {
         class TAG_fnc_callAirSupport { allowedTargets = 2; }; // Server only
         class TAG_fnc_callAmmoDrop { allowedTargets = 2; }; // Server only
         class TAG_fnc_callVehicleDelivery { allowedTargets = 2; }; // Server only
+        class TAG_fnc_callDroneSupport { allowedTargets = 2; }; // Server only
         class TAG_fnc_applyIdentity { allowedTargets = 0; jip = 1; }; // All clients
     };
     class Commands {
@@ -226,6 +228,51 @@ class CfgSounds {
     class task04_03 {
         name = "task04_03";
         sound[] = {"audio\task04_03.ogg",db+10, 1.1};
+        titles[] = {};
+    };
+    class drone_01 {
+        name = "drone_01";
+        sound[] = {"audio\drone_01.ogg",db+10, 1.1};
+        titles[] = {};
+    };
+    class drone_02 {
+        name = "drone_02";
+        sound[] = {"audio\drone_02.ogg",db+10, 1.1};
+        titles[] = {};
+    };
+    class drone_03 {
+        name = "drone_03";
+        sound[] = {"audio\drone_03.ogg",db+10, 1.1};
+        titles[] = {};
+    };
+    class refus_drone_01 {
+        name = "refus_drone_01";
+        sound[] = {"audio\refus_drone_01.ogg",db+10, 1.1};
+        titles[] = {};
+    };
+    class refus_drone_02 {
+        name = "refus_drone_02";
+        sound[] = {"audio\refus_drone_02.ogg",db+10, 1.1};
+        titles[] = {};
+    };
+    class refus_drone_03 {
+        name = "refus_drone_03";
+        sound[] = {"audio\refus_drone_03.ogg",db+10, 1.1};
+        titles[] = {};
+    };
+    class drone_info_01 {
+        name = "drone_info_01";
+        sound[] = {"audio\drone_info_01.ogg",db+10, 1.1};
+        titles[] = {};
+    };
+    class drone_info_02 {
+        name = "drone_info_02";
+        sound[] = {"audio\drone_info_02.ogg",db+10, 1.1};
+        titles[] = {};
+    };
+    class drone_info_03 {
+        name = "drone_info_03";
+        sound[] = {"audio\drone_info_03.ogg",db+10, 1.1};
         titles[] = {};
     };
 };

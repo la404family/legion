@@ -86,6 +86,21 @@ if (!hasInterface) exitWith {};
             "",
             "leader group _target == _target"
         ];
+
+        // Action 4 : Soutien Drone de Reconnaissance
+        _unit addAction [
+            localize "STR_TAG_Action_Support_Drone",
+            {
+                params ["_target", "_caller", "_actionId", "_arguments"];
+                [_caller] remoteExec ["TAG_fnc_callDroneSupport", 2];
+            },
+            [],
+            4.2,
+            false,
+            true,
+            "",
+            "leader group _target == _target"
+        ];
     };
 
     private _lastPlayer = objNull;

@@ -40,9 +40,9 @@ if (isServer) then {
         private _posOpfor = _combatPos getPos [80, _angleOpfor];
         private _posIndep = _combatPos getPos [80, _angleOpfor + 180];
 
-        for "_i" from 1 to 20 do {
-            private _u1 = _grpOpfor createUnit ["O_G_Soldier_F", _posOpfor getPos [random 30, random 360], [], 0, "NONE"];
-            private _u2 = _grpIndep createUnit ["I_G_Soldier_F", _posIndep getPos [random 30, random 360], [], 0, "NONE"];
+        for "_i" from 1 to 10 do {
+            private _u1 = _grpOpfor createUnit ["O_G_Soldier_F", _posOpfor getPos [random 50, random 360], [], 0, "NONE"];
+            private _u2 = _grpIndep createUnit ["I_G_Soldier_F", _posIndep getPos [random 50, random 360], [], 0, "NONE"];
             _u1 setDir (_u1 getDir _posIndep);
             _u2 setDir (_u2 getDir _posOpfor);
             _fakeUnits pushBack _u1;
@@ -258,7 +258,7 @@ if (hasInterface) then {
         _cam camPrepareTarget [(_combatPos select 0), (_combatPos select 1), 2];
         _cam camPrepareFOV 0.55;
         _cam camCommitPrepared 10;
-        sleep 9;
+        sleep 8;
 
        // ==========================================
         // PLAN COMBAT 1 : Vue de haut OPFOR vers INDEP
@@ -278,7 +278,7 @@ if (hasInterface) then {
         _cam camSetPos [(_posOpfor#0) - (sin _dirToIndep * 10), (_posOpfor#1) - (cos _dirToIndep * 10), (_posOpfor#2) + 8];
         _cam camSetFOV 0.35;
         _cam camCommit 7;
-        sleep 10;
+        sleep 8;
 
         // ==========================================
         // PLAN COMBAT 2 : Vue de haut INDEP vers OPFOR
@@ -298,7 +298,7 @@ if (hasInterface) then {
         _cam camSetPos [(_posIndep#0) - (sin _dirToOpfor * 10), (_posIndep#1) - (cos _dirToOpfor * 10), (_posIndep#2) + 8];
         _cam camSetFOV 0.35;
         _cam camCommit 7;
-        sleep 10;
+        sleep 8;
 
         detach _cam;
         _cam camPreparePos [(_combatPos select 0) - 120, (_combatPos select 1) - 120, 40];
@@ -310,7 +310,7 @@ if (hasInterface) then {
         _cam camPrepareTarget [(_combatPos select 0), (_combatPos select 1), 2];
         _cam camPrepareFOV 0.55;
         _cam camCommitPrepared 10;
-        sleep 10;
+        sleep 8;
 
         detach _cam;
         cutText ["", "BLACK FADED", 1];
