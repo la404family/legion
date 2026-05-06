@@ -58,6 +58,8 @@ if (isServer) then {
         _grpIndep setCombatMode "RED";
         _grpOpfor setBehaviour "COMBAT";
         _grpIndep setBehaviour "COMBAT";
+        // débout ou accroupi
+        
 
         { _x doMove _posIndep } forEach units _grpOpfor;
         { _x doMove _posOpfor } forEach units _grpIndep;
@@ -73,10 +75,10 @@ if (isServer) then {
             { deleteVehicle _x } forEach _units;
         };
 
-        private _startDist = 4500;
+        private _startDist = 3500;
         private _startDir = (_destPos getDir _combatPos) - 180;
         private _startPos = _destPos getPos [_startDist, _startDir];
-        _startPos set [2, 100];
+        _startPos set [2, 80];
 
         private _heliClass = "B_AMF_Heli_Transport_01_F";
         private _heli = createVehicle [_heliClass, _startPos, [], 0, "FLY"];
@@ -122,7 +124,7 @@ if (isServer) then {
         [_heli, ["door_rear_source", 1]] remoteExec ["animateSource", 0, true];
         [_heli, ["Ramp", 1]] remoteExec ["animateSource", 0, true];
 
-        _heli limitspeed 100;
+        _heli limitspeed 150;
         waitUntil { !alive _heli || { (_heli distance2D _destPos) < 200 } };
         if (!alive _heli) exitWith {};
         _heli land "GET OUT";
@@ -200,9 +202,9 @@ if (hasInterface) then {
         showCinemaBorder true;
         sleep 2;
 
-        private _txtFadeIn  = 0.5;
-        private _txtVisible = 7.9;
-        private _txtFadeOut = 0.5;
+        private _txtFadeIn  = 0.3;
+        private _txtVisible = 5.5; 
+        private _txtFadeOut = 0.3;
         private _txtDelay   = 3.0;
 
         private _line11 = localize "STR_Intro_Line11_Member";
@@ -232,9 +234,15 @@ if (hasInterface) then {
             params ["_texts", "_delay", "_fadeIn", "_visible", "_fadeOut"];
             sleep _delay;
             {
-                titleText [_x, "PLAIN", _fadeIn];
+                // Formatage du texte : Police (font) et Taille (size)
+                // Arma 3 n'a pas de police "serif" classique intégrée (comme Times New Roman).
+                // Polices possibles: "PuristaMedium", "PuristaBold", "RobotoCondensed", "EtelkaNarrowMediumPro", "PuristaLight"
+                // Changez size='1.5' pour modifier la taille (ex: 2.0 pour plus grand, 1.0 pour plus petit)
+                private _styledText = format ["<t font='EtelkaNarrowMediumPro' size='2.5' shadow='2'>%1</t>", _x];
+                
+                titleText [_styledText, "PLAIN", _fadeIn, false, true]; // "true" à la fin active le texte structuré
                 sleep (_fadeIn + _visible);
-                titleText ["", "PLAIN", _fadeOut];
+                titleText ["", "PLAIN", _fadeOut, false, true];
                 sleep _fadeOut;
             } forEach _texts;
         };
@@ -251,27 +259,47 @@ if (hasInterface) then {
         _cam camPrepareTarget [(_combatPos select 0), (_combatPos select 1), 2];
         _cam camPrepareFOV 0.55;
         _cam camCommitPrepared 10;
-        sleep 10;
+        sleep 12;
 
+       // ==========================================
+        // PLAN COMBAT 1 : Vue de haut OPFOR vers INDEP
+        // ==========================================
         detach _cam;
-        _cam attachTo [_unitOpfor, [-0.6, -1.8, 0.9]];
-        _cam camPrepareTarget (_unitOpfor getPos [5, getDir _unitOpfor]);
-        _cam camPrepareFOV 0.5;
-        _cam camCommitPrepared 0;
-        _cam camPrepareTarget (_unitOpfor getPos [8, getDir _unitOpfor]);
-        _cam camPrepareFOV 0.38;
-        _cam camCommitPrepared 8;
-        sleep 5;
+        private _posOpfor = getPosATL _unitOpfor;
+        private _posIndep = getPosATL _unitIndep;
+        private _dirToIndep = _posOpfor getDir _posIndep;
+        
+        // Position de départ (en retrait et en hauteur)
+        _cam camSetPos [(_posOpfor#0) - (sin _dirToIndep * 25), (_posOpfor#1) - (cos _dirToIndep * 25), (_posOpfor#2) + 15];
+        _cam camSetTarget _unitIndep;
+        _cam camSetFOV 0.45;
+        _cam camCommit 0;
 
+        // Mouvement panoramique cinématique vers la cible
+        _cam camSetPos [(_posOpfor#0) - (sin _dirToIndep * 10), (_posOpfor#1) - (cos _dirToIndep * 10), (_posOpfor#2) + 8];
+        _cam camSetFOV 0.35;
+        _cam camCommit 7;
+        sleep 7;
+
+        // ==========================================
+        // PLAN COMBAT 2 : Vue de haut INDEP vers OPFOR
+        // ==========================================
         detach _cam;
-        _cam attachTo [_unitIndep, [0.6, -1.8, 0.9]];
-        _cam camPrepareTarget (_unitIndep getPos [5, getDir _unitIndep]);
-        _cam camPrepareFOV 0.5;
-        _cam camCommitPrepared 0;
-        _cam camPrepareTarget (_unitIndep getPos [8, getDir _unitIndep]);
-        _cam camPrepareFOV 0.38;
-        _cam camCommitPrepared 8;
-        sleep 5;
+        _posOpfor = getPosATL _unitOpfor;
+        _posIndep = getPosATL _unitIndep;
+        private _dirToOpfor = _posIndep getDir _posOpfor;
+
+        // Position de départ inverse (côté INDEP)
+        _cam camSetPos [(_posIndep#0) - (sin _dirToOpfor * 25), (_posIndep#1) - (cos _dirToOpfor * 25), (_posIndep#2) + 15];
+        _cam camSetTarget _unitOpfor;
+        _cam camSetFOV 0.45;
+        _cam camCommit 0;
+
+        // Mouvement panoramique cinématique
+        _cam camSetPos [(_posIndep#0) - (sin _dirToOpfor * 10), (_posIndep#1) - (cos _dirToOpfor * 10), (_posIndep#2) + 8];
+        _cam camSetFOV 0.35;
+        _cam camCommit 7;
+        sleep 7;
 
         detach _cam;
         _cam camPreparePos [(_combatPos select 0) - 120, (_combatPos select 1) - 120, 40];
@@ -286,31 +314,67 @@ if (hasInterface) then {
         sleep 10;
 
         detach _cam;
-        _cam attachTo [_heli, [18, -38, 11]];
-        _cam camSetTarget _heli;
-        _cam camPrepareFOV 0.58;
-        _cam camCommitPrepared 0;
-
-        _cam camPreparePos (getPosATL _heli vectorAdd [22, -45, 13]);
-        _cam camPrepareFOV 0.48;
-        _cam camCommitPrepared 19;
-        sleep 19;
-
+        cutText ["", "BLACK FADED", 1];
+        sleep 1;
+        cutText ["", "BLACK IN", 1];
         
-
+        private _orbStartTime = time;
+        private _orbDuration = 35;
+        private _orbitAngle = -90;   
+        private _updateInterval = 0.1;   
+        private _commitTime = 0.5;       
+        while { time < _orbStartTime + _orbDuration } do {
+            private _progress = (time - _orbStartTime) / _orbDuration;
+            _orbitAngle = -90 + (_progress * 135);
+            private _distance = 35 - (_progress * 10);
+            private _height = 12;
+            private _heliPos = getPosATL _heli;
+            private _heliDir = getDir _heli;
+            private _finalAngle = _heliDir + _orbitAngle;
+            private _camX = (_heliPos select 0) + (sin _finalAngle * _distance);
+            private _camY = (_heliPos select 1) + (cos _finalAngle * _distance);
+            private _camZ = (_heliPos select 2) + _height;
+            _cam camSetPos [_camX, _camY, _camZ];
+            _cam camSetTarget _heli;
+            _cam camSetFov 0.75;
+            _cam camCommit _commitTime;   
+            sleep _updateInterval;   
+        };
+        
+        detach _cam;
+        cutText ["", "BLACK FADED", 0.5];
+        sleep 0.5;
+        
         private _lzPos = getPosATL heliport_00;
-_cam camPreparePos [
-    (_lzPos select 0) + 38,
-    (_lzPos select 1) - 25,
-    (_lzPos select 2) + 0.35
-];
-_cam camSetTarget [_heli, 0, 0, 8];           // regarde légèrement vers le haut
-_cam camPrepareFOV 0.28;                      // très serré = impact fort
-_cam camCommitPrepared 0;
-
-// Zoom out lent pendant l'approche
-_cam camPrepareFOV 0.55;
-_cam camCommitPrepared 20;
+        private _aerialCamPos = [
+            (_lzPos select 0),
+            (_lzPos select 1) - 90,
+            (_lzPos select 2) + 35
+        ];
+        _cam camSetPos _aerialCamPos;
+        _cam camSetTarget _lzPos;
+        _cam camSetFov 0.55;
+        _cam camCommit 0;
+        waitUntil { camCommitted _cam };
+        cutText ["", "BLACK IN", 1];
+        
+        private _rampOpened = false;
+        private _plan5StartTime = time;
+        while { !isTouchingGround _heli && (getPos _heli select 2) > 1 && vehicle player != player } do {
+            private _progress = (time - _plan5StartTime) / 5;
+            private _baseHeight = 35;
+            private _descent = _progress * 5;  
+            private _finalZ = ((_lzPos select 2) + _baseHeight - _descent) max ((_lzPos select 2) + 2);
+            private _newCamPos = [
+                (_lzPos select 0) + (sin (time * 5) * 12),
+                (_lzPos select 1) - 90 + (cos (time * 5) * 12),
+                _finalZ
+            ];
+            _cam camSetPos _newCamPos;
+            _cam camSetFov ((0.55 - (_progress * 0.15)) max 0.2); 
+            _cam camCommit 0.5;
+            sleep 0.2;
+        };
 
         waitUntil { vehicle player == player };
 
