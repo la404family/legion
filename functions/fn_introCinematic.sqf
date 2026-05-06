@@ -101,7 +101,7 @@ if (isServer) then {
             missionNamespace getVariable ["player_0", objNull], missionNamespace getVariable ["player_1", objNull],
             missionNamespace getVariable ["player_2", objNull], missionNamespace getVariable ["player_3", objNull],
             missionNamespace getVariable ["player_4", objNull], missionNamespace getVariable ["player_5", objNull],
-            missionNamespace getVariable ["player_6", objNull]
+            missionNamespace getVariable ["player_6", objNull], missionNamespace getVariable ["player_7", objNull]
         ];
         private _validPlayers = _playersObj select { !isNull _x && alive _x };
 
