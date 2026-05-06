@@ -218,16 +218,19 @@ private _snd = selectRandom ["task02_01", "task02_02", "task02_03"];
             {
                 private _idx  = _forEachIndex;
                 private _mID  = _markers select _idx;
-                if (!alive _x) then {
-                    deleteMarker _mID;
-                } else {
-                    _mID setMarkerPos (getPos _x);
+                // Ne mettre à jour que si le marqueur existe encore
+                if (markerType _mID != "") then {
+                    if (!alive _x) then {
+                        deleteMarker _mID;
+                    } else {
+                        _mID setMarkerPos (getPos _x);
+                    };
                 };
             } forEach _officers;
         };
 
-        // Nettoyage final des marqueurs suspects
-        { deleteMarker _x; } forEach _markers;
+        // Nettoyage final : marqueurs restants + marqueur document
+        { if (markerType _x != "") then { deleteMarker _x; }; } forEach _markers;
         deleteMarker "TAG_task02_doc";
     };
 
@@ -250,12 +253,20 @@ private _snd = selectRandom ["task02_01", "task02_02", "task02_03"];
     if (DEBUG_MODE) then { diag_log "[TAG] task02: Tâche de récupération créée."; };
 
     // ── Surveiller la mort de l'officier cible ────────────────────────────────
-    [_targetOfficer, _allGroups] spawn {
-        params ["_target", "_allGroups"];
+    [_targetOfficer, _allGroups, _markers] spawn {
+        params ["_target", "_allGroups", "_markers"];
 
         waitUntil { sleep 1; !alive _target };
 
         if (DEBUG_MODE) then { diag_log "[TAG] task02: Officier cible éliminé. Dépôt des documents."; };
+
+        // Publier le corps AVANT le document — le client en a besoin pour l'addAction
+        TAG_Task02_Body = _target;
+        publicVariable "TAG_Task02_Body";
+
+        // Supprimer TOUS les marqueurs rouges suspects immédiatement
+        // (le joueur sait maintenant que c'est ici — les autres positions ne comptent plus)
+        { deleteMarker _x; } forEach _markers;
 
         // Spawn du document au sol — utiliser getPosASL pour avoir la hauteur absolue exacte
         private _bodyPos = getPosASL _target;

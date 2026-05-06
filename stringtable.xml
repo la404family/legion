@@ -420,5 +420,47 @@
             <French>QG: Impossible d'identifier les positions suspectes. Mission annulée.</French>
             <English>HQ: Unable to identify suspect positions. Mission aborted.</English>
         </Key>
+
+        <!-- Tâche 03 : Exfiltration d'otage -->
+        <Key ID="STR_TAG_Task_03_Title">
+            <French>Exfiltration de l'otage</French>
+            <English>Hostage Exfiltration</English>
+        </Key>
+        <Key ID="STR_TAG_Task_03_Marker">
+            <French>Zone de recherche</French>
+            <English>Search Area</English>
+        </Key>
+        <Key ID="STR_TAG_Task_03_Desc">
+            <French>Un civil a été capturé par les forces ennemies et est retenu prisonnier dans le secteur.&lt;br/&gt;Trois zones suspectes ont été identifiées — l'otage se trouve dans l'une d'elles, gardé par des soldats ennemis.&lt;br/&gt;Localisez l'otage, neutralisez les gardes et libérez-le. Un hélicoptère d'extraction sera dépêché dès sa libération.&lt;br/&gt;Assurez l'embarquement de l'otage et la sécurisation de la zone d'atterrissage.</French>
+            <English>A civilian has been captured by enemy forces and is being held prisoner in the sector.&lt;br/&gt;Three suspect zones have been identified — the hostage is in one of them, guarded by enemy soldiers.&lt;br/&gt;Locate the hostage, neutralize the guards, and free him. An extraction helicopter will be dispatched upon his release.&lt;br/&gt;Ensure the hostage boards the helicopter and secure the landing zone.</English>
+        </Key>
+        <Key ID="STR_TAG_Task_03_ZoneMarker">
+            <French>Zone de recherche</French>
+            <English>Search Area</English>
+        </Key>
+        <Key ID="STR_TAG_Task_03_LZMarker">
+            <French>Zone d'extraction</French>
+            <English>Extraction Zone</English>
+        </Key>
+        <Key ID="STR_TAG_Task_03_FreeAction">
+            <French>Libérer l'otage</French>
+            <English>Free the Hostage</English>
+        </Key>
+        <Key ID="STR_TAG_Task_03_HeliIncoming">
+            <French>QG: Hélicoptère d'extraction en route ! Rejoignez la zone d'atterrissage et protégez l'otage.</French>
+            <English>HQ: Extraction helicopter inbound! Move to the landing zone and protect the hostage.</English>
+        </Key>
+        <Key ID="STR_TAG_Task_03_HeliWait">
+            <French>ATTENTION : Sortez de l'hélicoptère ! L'appareil ne décollera pas tant qu'un soldat est à bord.</French>
+            <English>WARNING: Exit the helicopter! The aircraft will not take off while a soldier remains on board.</English>
+        </Key>
+        <Key ID="STR_TAG_Task_03_HeliTakeoff">
+            <French>QG: Extraction en cours — l'hélicoptère quitte la zone. Mission accomplie !</French>
+            <English>HQ: Extraction underway — helicopter is leaving the area. Mission accomplished!</English>
+        </Key>
+        <Key ID="STR_TAG_Task_03_Error">
+            <French>QG: Impossible de localiser les zones de recherche. Mission annulée.</French>
+            <English>HQ: Unable to locate the search zones. Mission aborted.</English>
+        </Key>
     </Package>
 </Project>

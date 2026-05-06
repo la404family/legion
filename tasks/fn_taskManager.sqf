@@ -242,9 +242,13 @@ private _owner = west;
     waitUntil { (["task_01_recon"] call BIS_fnc_taskState) in ["SUCCEEDED", "FAILED"] };
     [] call TAG_fnc_task02;
 
-    // ─ Task 03 et suivantes : ajouter ici de la même façon ──────────────────
-    // waitUntil { ["task_02_intel"] call BIS_fnc_taskCompleted };
-    // [] call TAG_fnc_task03;
+    // ─ Task 03 : exfiltration d'otage ────────────────────────────────────────
+    waitUntil { (["task_02_intel"] call BIS_fnc_taskState) in ["SUCCEEDED", "FAILED"] };
+    [] call TAG_fnc_task03;
+
+    // ─ Task 04 et suivantes : ajouter ici de la même façon ──────────────────
+    // waitUntil { (["task_03_hostage"] call BIS_fnc_taskState) in ["SUCCEEDED", "FAILED"] };
+    // [] call TAG_fnc_task04;
 };
 
 if (DEBUG_MODE) then {

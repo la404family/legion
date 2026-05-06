@@ -44,6 +44,8 @@ class CfgFunctions {
             class task01_addAction {};
             class task02 {};
             class task02_addAction {};
+            class task03 {};
+            class task03_addAction {};
         };
     };
 };
@@ -63,14 +65,19 @@ class CfgRemoteExec {
         class TAG_fnc_task01_addAction { allowedTargets = 0; }; // All clients
         class TAG_fnc_task01_runScenario { allowedTargets = 2; }; // Server only
         class TAG_fnc_task02_addAction { allowedTargets = 0; }; // All clients
+        class TAG_fnc_task03_addAction { allowedTargets = 0; jip = 1; }; // All clients (JIP)
         class BIS_fnc_taskSetState { allowedTargets = 0; }; // Task state sync (all machines)
+        class BIS_fnc_holdActionAdd { allowedTargets = 0; }; // Hold actions (all clients)
+        class BIS_fnc_taskSetDestination { allowedTargets = 2; }; // Server only
     };
     class Commands {
         mode = 1;  // whitelist
-        class say3D     { allowedTargets = 0; }; // used by callToPrayer on clients
-        class playSound { allowedTargets = 0; }; // used by task/drone sounds (all clients)
+        class say3D       { allowedTargets = 0; }; // used by callToPrayer on clients
+        class playSound   { allowedTargets = 0; }; // used by task/drone sounds (all clients)
         class deleteVehicle { allowedTargets = 0; }; // used by task02_addAction callback
         class deleteMarker  { allowedTargets = 0; }; // used by task02_addAction callback
+        class hint        { allowedTargets = 0; }; // used by task03 notifications (all clients)
+        class switchMove  { allowedTargets = 0; }; // used by task03 hostage animations (all clients)
     };
 };
 
